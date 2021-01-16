@@ -80,7 +80,7 @@ pytest-asyncio==0.14.0
 pytest-django==4.1.0
 python-dateutil==2.8.1
 python-decouple==3.3
-python-magic==0.4.18
+python-magic==0.4.20
 python-magic-bin==0.4.14
 python3-openid==3.2.0
 pytz==2020.4
