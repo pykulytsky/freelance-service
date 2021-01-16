@@ -15,6 +15,7 @@ from datetime import datetime
 from datetime import timedelta
 
 from django_countries.fields import CountryField
+from behaviors.behaviors import Timestamped
 
 
 class UserManager(BaseUserManager):
@@ -58,14 +59,14 @@ class UserManager(BaseUserManager):
 
 
 class Role(models.Model):
-    FREELANCER = 1
+    PERFORMER = 1
     EMPLOYER = 2
-    AGENCY_FREELANCER = 3
+    AGENCY_PERFORMER = 3
 
     ROLE_CHOISES = (
-        (FREELANCER, 'freelancer'),
+        (PERFORMER, 'performer'),
         (EMPLOYER, 'employer'),
-        (AGENCY_FREELANCER, 'agency_freelancer'),
+        (AGENCY_PERFORMER, 'agency_performer'),
     )
 
     id = models.PositiveSmallIntegerField(
@@ -83,7 +84,10 @@ class User(AbstractBaseUser, PermissionsMixin):
                               unique=True,
                               blank=False)
 
-    age = models.IntegerField(validators=[custom_validators.validate_age, ], verbose_name='Age', blank=True, null=True)
+    age = models.IntegerField(
+        validators=[custom_validators.validate_age, ],
+        verbose_name='Age',
+        blank=True, null=True)
 
     first_name = models.CharField(max_length=255, blank=True, verbose_name="First Name")
 
@@ -93,8 +97,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     avatar = models.ImageField(upload_to="assets/avatars/",
                                default="noimage.png")
-
     avatar_url = models.URLField(blank=True, null=True)
+
+    total_jobs_completed = models.PositiveIntegerField(default=0)
+
+    rating = models.PositiveSmallIntegerField(validators=[custom_validators.rating_validator, ], verbose_name="Rating")
+
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
