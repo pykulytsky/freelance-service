@@ -9,13 +9,13 @@ class Room(Timestamped):
 
 class Message(Timestamped):
     sender = models.ForeignKey(
-        settings.USER_MODEL,
-        related_name="messages",
+        settings.AUTH_USER_MODEL,
+        related_name="sended_messages",
         on_delete=models.PROTECT)
 
     receiver = models.ForeignKey(
-        settings.USER_MODEL,
-        related_name="messages",
+        settings.AUTH_USER_MODEL,
+        related_name="received_messages",
         on_delete=models.PROTECT)
 
     body = models.CharField(

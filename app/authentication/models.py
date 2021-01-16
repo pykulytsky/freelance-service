@@ -96,12 +96,14 @@ class User(AbstractBaseUser, PermissionsMixin):
                                  verbose_name="Last Name")
 
     avatar = models.ImageField(upload_to="assets/avatars/",
-                               default="noimage.png")
+                               blank=True)
     avatar_url = models.URLField(blank=True, null=True)
 
     total_jobs_completed = models.PositiveIntegerField(default=0)
 
-    rating = models.PositiveSmallIntegerField(validators=[custom_validators.rating_validator, ], verbose_name="Rating")
+    rating = models.PositiveSmallIntegerField(
+        validators=[custom_validators.rating_validator, ], verbose_name="Rating",
+        default=0)
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -127,7 +129,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
 
-    country = CountryField()
+    country = CountryField(blank=True)
 
     objects = UserManager()
 
@@ -166,7 +168,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             token = jwt.encode({
                 'id': self.pk,
                 'exp': dt.timestamp(),
-                'user_type': self.role.id
+                'role': self.role.id
             }, settings.SECRET_KEY, algorithm='HS256')
         except (InvalidTokenError, DecodeError, InvalidAlgorithmError,
                 InvalidAudienceError, ExpiredSignatureError, ImmatureSignatureError,

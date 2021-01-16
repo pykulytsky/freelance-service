@@ -1,7 +1,10 @@
 from django.db import models
 from behaviors.behaviors import Timestamped
 import authentication.validators as custom_validators
+
 from authentication.models import User
+
+from chat.models import Room
 
 
 class Job(Timestamped):
@@ -12,16 +15,59 @@ class Job(Timestamped):
 
     deadline = models.DateField()
 
+    author = models.ForeignKey(
+        User,
+        related_name="created_jobs",
+        on_delete=models.CASCADE)
+    performer = models.ForeignKey(
+        User,
+        related_name="performed_jobs",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True)
+
+    price = models.DecimalField(
+        decimal_places=2,
+        max_digits=6,
+        blank=False,
+        null=False)
+    is_price_fixed = models.BooleanField()
+
+    chat_room = models.OneToOneField(
+        Room,
+        related_name="job",
+        on_delete=models.PROTECT
+    )
+
+    views = models.PositiveIntegerField(default=0)
+
+
+
+    class Meta:
+        unique_together = ('author', 'performer')
+
+
+class FavoritesJobs(Timestamped):
+    job = models.ForeignKey(
+        Job,
+        on_delete=models.CASCADE,
+        related_name="favorites_list")
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="favorites_jobs"
+    )
 
 class AttachedFile(models.Model):
-    file = models.FileField(upload_to="/files/")
+    file = models.FileField(upload_to="files/")
     job = models.ForeignKey(
         Job,
         related_name="files",
         on_delete=models.CASCADE)
 
 
-class Respond(Timestamped):
+class Feedback(Timestamped):
     body = models.CharField(max_length=8192)
     rating = models.PositiveSmallIntegerField(
         validators=[custom_validators.rating_validator, ]
@@ -29,15 +75,19 @@ class Respond(Timestamped):
 
     author = models.ForeignKey(
         User,
-        related_name="responds",
+        related_name="created_feedback",
         on_delete=models.PROTECT)
 
     performer = models.ForeignKey(
         User,
-        related_name="responds",
+        related_name="received_feedback",
         on_delete=models.CASCADE)
 
-    job = models.ForeignKey()
+    job = models.ForeignKey(
+        Job,
+        related_name="feedback",
+        on_delete=models.CASCADE
+    )
 
     
     class Meta:
