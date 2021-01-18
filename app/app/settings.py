@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
-
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,7 +48,9 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'drf_yasg',
     "djcelery_email",
-    'silk'
+    'djmoney',
+    'silk',
+    'djmoney.contrib.exchange',
 ]
 
 PROJECT_APPS = [
@@ -203,3 +205,13 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 
 STATIC_ROOT = '/static/'
+
+EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
+
+CELERYBEAT_SCHEDULE = {
+    'update_rates': {
+        'task': 'jobs.tasks.update_exchange',
+        'schedule': crontab(minute=0, hour=0),
+        'kwargs': {}  # For custom arguments
+    }
+}

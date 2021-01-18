@@ -17,8 +17,15 @@ from datetime import timedelta
 from django_countries.fields import CountryField
 from behaviors.behaviors import Timestamped
 
+class BaseAuthManager(BaseUserManager):
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except ObjectDoesNotExist:
+            return None
 
-class UserManager(BaseUserManager):
+
+class UserManager(BaseAuthManager):
     """Class calls when calls User.objects"""
 
     def _create_user(self, username, email, password=None, **extra_fields):
@@ -51,14 +58,10 @@ class UserManager(BaseUserManager):
 
         return self._create_user(username, email, password, **extra_fields)
 
-    def get_or_none(self, **kwargs):
-        try:
-            return self.get(**kwargs)
-        except ObjectDoesNotExist:
-            return None
-
 
 class Role(models.Model):
+    objects = BaseAuthManager()
+
     PERFORMER = 1
     EMPLOYER = 2
     AGENCY_PERFORMER = 3
@@ -115,6 +118,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email_verification_code = models.UUIDField(max_length=32,
                                                default=uuid.uuid4,
                                                editable=False)
+    subscribe_to_mailing = models.BooleanField(default=False)
 
     role = models.ForeignKey(
         Role,
@@ -138,8 +142,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.last_name = self.last_name.capitalize()
 
         # move to service object
-        if self.role.id == 2 and not self.user_verified:
-            raise ValidationError("Usert with that role must be verified")
+        # if self.role.id == 2 and not self.user_verified:
+        #     raise ValidationError("Usert with that role must be verified")
             
         super().save(*args, **kwargs)
 
@@ -168,7 +172,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             token = jwt.encode({
                 'id': self.pk,
                 'exp': dt.timestamp(),
-                'role': self.role.id
+                'role': self.role.id,
+                'is_superuser': self.is_superuser
             }, settings.SECRET_KEY, algorithm='HS256')
         except (InvalidTokenError, DecodeError, InvalidAlgorithmError,
                 InvalidAudienceError, ExpiredSignatureError, ImmatureSignatureError,

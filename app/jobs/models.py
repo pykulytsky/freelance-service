@@ -6,6 +6,8 @@ from authentication.models import User
 
 from chat.models import Room
 
+from djmoney.models.fields import MoneyField
+
 
 class Job(Timestamped):
     title = models.CharField(
@@ -26,11 +28,11 @@ class Job(Timestamped):
         blank=True,
         null=True)
 
-    price = models.DecimalField(
+    price = MoneyField(
+        max_digits=14,
         decimal_places=2,
-        max_digits=6,
-        blank=False,
-        null=False)
+        default_currency='USD'
+    )
     is_price_fixed = models.BooleanField()
 
     chat_room = models.OneToOneField(

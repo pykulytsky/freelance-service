@@ -1,3 +1,4 @@
+from datetime import datetime
 import jwt
 
 from django.conf import settings
@@ -33,8 +34,13 @@ class JWTAuthentication(authentication.BaseAuthentication):
     def _authenticate_credentials(self, request, token) -> tuple:
         try:
             payload = jwt.decode(token, settings.SECRET_KEY)
+
+            if payload.get(
+                'exp', 
+                datetime.now().timestamp()) < datetime.now().timestamp():
+                raise exceptions.AuthenticationFailed("JWT token expired, please relogin to become new token")
         except:
-            message = 'Не можу автентифікувати, неправельний токен'
+            message = 'Can`t authentication, token didn`t match'
             raise exceptions.AuthenticationFailed(message)
 
         try:
@@ -43,7 +49,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
             msg = 'No user matching this token was found.'
             raise exceptions.AuthenticationFailed(msg)
         if not user.is_active:
-            message = 'Неактивний користувач.'
+            message = 'Inactive user'
             raise exceptions.AuthenticationFailed(message)
 
         return (user, token)
