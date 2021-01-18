@@ -50,6 +50,8 @@ class UserManager(BaseAuthManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
+        extra_fields.setdefault('is_active', True)
+
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Суперкористувач повинен мати is_staff=True.')
 
@@ -173,7 +175,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                 'id': self.pk,
                 'exp': dt.timestamp(),
                 'role': self.role.id,
-                'is_superuser': self.is_superuser
+                'is_superuser': int(self.is_superuser)
             }, settings.SECRET_KEY, algorithm='HS256')
         except (InvalidTokenError, DecodeError, InvalidAlgorithmError,
                 InvalidAudienceError, ExpiredSignatureError, ImmatureSignatureError,

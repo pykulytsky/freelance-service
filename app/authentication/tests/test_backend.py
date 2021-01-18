@@ -1,4 +1,3 @@
-from django.http import response
 from django.urls.base import reverse
 import pytest
 from django.urls import reverse

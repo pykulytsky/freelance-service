@@ -55,6 +55,17 @@ def inactive_user(django_user_model, performer_role):
 
 
 @pytest.fixture
+def active_user(django_user_model, performer_role):
+    return django_user_model.objects.create_user(
+        username="test3",
+        password="123456",
+        email="test3@py.com",
+        role=performer_role,
+        is_active=True
+    )
+
+
+@pytest.fixture
 def superuser(django_user_model, performer_role):
     user = django_user_model.objects.create(
         username="test",

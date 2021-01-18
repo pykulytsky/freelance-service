@@ -35,19 +35,23 @@ class JWTAuthentication(authentication.BaseAuthentication):
         try:
             payload = jwt.decode(token, settings.SECRET_KEY)
 
-            if payload.get(
-                'exp', 
-                datetime.now().timestamp()) < datetime.now().timestamp():
-                raise exceptions.AuthenticationFailed("JWT token expired, please relogin to become new token")
         except:
-            message = 'Can`t authentication, token didn`t match'
+            message = 'Can`t authenticate, token didn`t match'
             raise exceptions.AuthenticationFailed(message)
+
+        if payload.get(
+                'exp', 
+                datetime.now().timestamp()
+                ) < datetime.now().timestamp():
+            raise exceptions.AuthenticationFailed("JWT token expired, please relogin to become new token")
 
         try:
             user = User.objects.get(pk=payload['id'])
         except User.DoesNotExist:
             msg = 'No user matching this token was found.'
             raise exceptions.AuthenticationFailed(msg)
+
+        print(f'{user.is_active=}')
         if not user.is_active:
             message = 'Inactive user'
             raise exceptions.AuthenticationFailed(message)

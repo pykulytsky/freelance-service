@@ -42,7 +42,10 @@ class LoginSerializer(serializers.Serializer):
 
         if password is None:
             serializers.ValidationError('Для входу потрібен пароль.')
-        user = authenticate(username=email, password=password)
+        user = User.objects.get_or_none(
+            email=email,
+            password=password)
+        
 
         if user is None:
             raise serializers.ValidationError("Такого користувача не знайдено.")

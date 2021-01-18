@@ -5,7 +5,7 @@ from django.urls import reverse
 pytestmark = [pytest.mark.django_db]
 
 
-def test_login(api, superuser):
+def test_login_inactive_user(api, superuser):
     url = reverse('login')
 
     response = api.post(
@@ -16,5 +16,19 @@ def test_login(api, superuser):
             'email': superuser.email
         })
 
-    assert False, response.data
+    assert response.status_code == 403
+
+
+def test_login_active_user(api, active_user):
+    url = reverse('login')
+
+    response = api.post(
+        url,
+        {
+            'username': active_user.username,
+            'password': active_user.password,
+            'email': active_user.email
+        })
+    
     assert response.status_code == 200
+    assert response.data['token'] == active_user.token
