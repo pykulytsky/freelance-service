@@ -65,6 +65,11 @@ class UserCreator:
     def __call__(self) -> User:
         user = self.create()
 
+        self.verify_email(
+                user.email_verification_code,
+                'http://localhost:8080/verify/')
+        self.subscribe()
+
         return user
 
     def create(self):
@@ -82,10 +87,6 @@ class UserCreator:
         if serializer.is_valid():
             serializer.save()
 
-            self.verify_email(
-                serializer.instance.email_verification_code,
-                'http://localhost:8080/verify/')
-            
             return serializer.instance
 
     def create_employer(self, user_data) -> Optional[User]:
@@ -93,10 +94,6 @@ class UserCreator:
 
         if serializer.is_valid():
             serializer.save()
-
-            self.verify_email(
-                serializer.instance.email_verification_code,
-                'http://localhost:8080/verify/')
 
             return serializer.instance
 

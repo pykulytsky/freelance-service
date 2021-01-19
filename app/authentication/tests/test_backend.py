@@ -24,7 +24,7 @@ def test_backend_access_inactive_user_exception(api, backend, inactive_user):
         backend.authenticate(request)
 
 
-def test_backend_access_inactive_user(api, backend, inactive_user):
+def test_backend_access_inactive_user(api, inactive_user):
     url = reverse('login')
     response = api.post(
         url,
@@ -37,24 +37,7 @@ def test_backend_access_inactive_user(api, backend, inactive_user):
     assert response.status_code == 403
 
 
-@pytest.mark.skip
-def test_backend_access_active_user_exception(anon_api, backend, active_user):
-    url = reverse('login')
-    response = anon_api.post(
-        url,
-        {
-            'username': active_user.username,
-            'password': active_user.password,
-            'email': active_user.email
-        })
-
-    request = response.wsgi_request
-
-    user = authenticate(username=active_user.email, passoword=active_user.password)
-
-    assert active_user == user
-
-def test_backend_access_active_user(api, backend, active_user):
+def test_backend_access_active_user(api, active_user):
     url = reverse('login')
     response = api.post(
         url,

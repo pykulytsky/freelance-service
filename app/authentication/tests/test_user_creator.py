@@ -31,7 +31,7 @@ def test_creator_create_user_with_role_with_create_method(creator, performer_rol
 
     assert isinstance(user, User)
 
-    
+
 def test_creator_create_user_with_role(creator, performer_role):
     user = creator(
         username='test',
@@ -69,3 +69,125 @@ def test_creator_create_user_with_role_with_already_used_credentials(creator, pe
 
     assert user == another_user
 
+
+def test_creator_verify_email_is_called(mocker, creator, performer_role):
+    user_creator = creator(
+        username='test',
+        email='test@py.com',
+        password='1234',
+        first_name='oleh',
+        last_name="pykulytsky",
+        role=performer_role.id
+    )
+    mocker.patch('authentication.creator.UserCreator.verify_email')
+
+    user = user_creator()
+
+    user_creator.verify_email.assert_called_once()
+    assert isinstance(user, User)
+
+
+def test_creator_verify_email_is_called_with_parametres(mocker, creator, performer_role):
+    user_creator = creator(
+        username='test',
+        email='test@py.com',
+        password='1234',
+        first_name='oleh',
+        last_name="pykulytsky",
+        role=performer_role.id
+    )
+    mocker.patch('authentication.creator.UserCreator.verify_email')
+
+    user = user_creator()
+
+    user_creator.verify_email.assert_called_once_with(
+        user.email_verification_code,
+        'http://localhost:8080/verify/'
+    )
+    assert isinstance(user, User)
+
+
+def test_creator_emit_common_create_method(mocker, creator, performer_role):
+    user_creator = creator(
+        username='test',
+        email='test@py.com',
+        password='1234',
+        first_name='oleh',
+        last_name="pykulytsky",
+        role=performer_role.id
+    )
+    mocker.patch('authentication.creator.UserCreator.create')
+
+    user_creator()
+
+    user_creator.create.assert_called_once()
+
+
+def test_creator_emit_correct_create_method(mocker, creator, performer_role):
+    user_creator = creator(
+        username='test',
+        email='test@py.com',
+        password='1234',
+        first_name='oleh',
+        last_name="pykulytsky",
+        role=performer_role.id
+    )
+    mocker.patch('authentication.creator.UserCreator.create_performer')
+
+    user_creator()
+
+    user_creator.create_performer.assert_called_once()
+
+
+def test_creator_not_emit_wrong_create_method(mocker, creator, performer_role):
+    user_creator = creator(
+        username='test',
+        email='test@py.com',
+        password='1234',
+        first_name='oleh',
+        last_name="pykulytsky",
+        role=performer_role.id
+    )
+    mocker.patch('authentication.creator.UserCreator.create_employer')
+
+    user = user_creator()
+
+    user_creator.create_employer.assert_not_called()
+    assert isinstance(user, User)
+
+
+def test_creator_emit_subscribe_method(mocker, creator, performer_role):
+    user_creator = creator(
+        username='test',
+        email='test@py.com',
+        password='1234',
+        first_name='oleh',
+        last_name="pykulytsky",
+        role=performer_role.id
+    )
+    mocker.patch('authentication.creator.UserCreator.subscribe')
+
+    user = user_creator()
+
+    user_creator.subscribe.assert_called_once()
+    assert isinstance(user, User)
+
+
+def test_creator_send_email(creator, performer_role):
+    user_creator = creator(
+        username='test',
+        email='pykulytsky@gmail.com',
+        password='1234',
+        first_name='oleh',
+        last_name="pykulytsky",
+        role=performer_role.id
+    )
+
+    user = user_creator.create()
+
+    mail = user_creator.verify_email(
+        user.email_verification_code,
+        'http://localhost:8080/verify/'
+    )
+
+    assert mail == 1
