@@ -54,7 +54,7 @@ itypes==1.2.0
 jedi==0.17.2
 Jinja2==2.11.2
 kombu==5.0.2
-lazy-object-proxy==1.4.3
+lazy-object-proxy==1.5.2
 MarkupSafe==1.1.1
 mccabe==0.6.1
 mixer==7.1.2
