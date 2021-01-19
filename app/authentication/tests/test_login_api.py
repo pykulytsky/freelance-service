@@ -19,6 +19,7 @@ def test_login_inactive_user(api, superuser):
     assert response.status_code == 403
 
 
+@pytest.mark.xfail(strict=True)
 def test_login_active_user(api, active_user):
     url = reverse('login')
 

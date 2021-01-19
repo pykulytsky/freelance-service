@@ -81,6 +81,7 @@ class Role(models.Model):
     def __str__(self):
       return self.get_id_display()
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(db_index=True,
                                 max_length=255,

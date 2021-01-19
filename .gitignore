@@ -10,6 +10,9 @@ env/
 .env/
 .vscode/
 
+fishenv/
+.fishenv/
+
 # Distribution / packaging
 .Python
 build/

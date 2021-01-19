@@ -6,6 +6,13 @@ from rest_framework.test import APIClient
 from authentication.models import Role
 from authentication.backend import JWTAuthentication
 
+from mixer.backend.django import mixer as _mixer
+from authentication.creator import UserCreator
+
+@pytest.fixture
+def mixer():
+    return _mixer
+
 
 @pytest.fixture
 def anon_api():
@@ -35,48 +42,47 @@ def employer_role():
 
 
 @pytest.fixture
-def user(django_user_model, employer_role):
-    return django_user_model.objects.create_user(
-        username="test2",
-        password="123456",
-        email="test2@py.com",
+def user(django_user_model, employer_role, mixer):
+    return mixer.blend(
+        django_user_model,
         role=employer_role,
-        user_verified=True
-    )
+        is_active=True)
 
 @pytest.fixture
-def inactive_user(django_user_model, performer_role):
-    return django_user_model.objects.create_user(
-        username="test1",
-        password="123456",
-        email="test1@py.com",
-        role=performer_role
+def inactive_user(django_user_model, performer_role, mixer):
+    return mixer.blend(
+        django_user_model,
+        role = performer_role,
     )
 
 
 @pytest.fixture
-def active_user(django_user_model, performer_role):
-    return django_user_model.objects.create_user(
-        username="test3",
-        password="123456",
-        email="test3@py.com",
+def active_user(django_user_model, performer_role, mixer):
+    return mixer.blend(
+        django_user_model,
         role=performer_role,
-        is_active=True
-    )
+        is_active=True)
 
 
 @pytest.fixture
-def superuser(django_user_model, performer_role):
-    user = django_user_model.objects.create(
-        username="test",
-        password="test123456",
-        email="test@test.com",
+def superuser(django_user_model, performer_role, mixer):
+    return mixer.blend(
+        django_user_model,
+        role=performer_role,
         is_superuser=True,
-        role=performer_role
-    )
-    return user
+        si_staff=True)
 
 
 @pytest.fixture
 def backend():
     return JWTAuthentication()
+
+
+@pytest.fixture
+def creator():
+    return UserCreator
+
+
+@pytest.fixture
+def creator_mail(mocker):
+    return mocker.patch('UserCreator.send_email')

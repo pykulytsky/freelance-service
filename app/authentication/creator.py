@@ -19,7 +19,6 @@ class RoleSerializer(serializers.ModelSerializer):
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    role = RoleSerializer()
 
     class Meta:
         model = User
@@ -28,9 +27,21 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'email',
             'password',
             'first_name',
-            'last_name'
+            'last_name',
             'role'
         ]
+
+    # def create(self, validated_data):
+    #     print(validated_data)
+    #     role = Role.objects.get(id=validated_data['role'])
+    #     del validated_data['role']
+
+    #     user = User.objects.create_user(
+    #         role=role,
+    #         **validated_data
+    #     )
+
+    #     return user
 
 class UserCreator:
     def __init__(
@@ -52,17 +63,21 @@ class UserCreator:
         }
 
     def __call__(self) -> User:
-        if self.role == 1:
+        user = self.create()
+
+        return user
+
+    def create(self):
+        if self.data['role'] == 1:
             self.user = self.get_user() or self.create_performer(self.data)
         
-        if self.role == 2:
+        if self.data['role'] == 2:
             self.user = self.get_user() or self.create_employer(self.data)
 
-        
         return self.user
     
     def create_performer(self, user_data) -> Optional[User]:
-        serializer = UserCreateSerializer(user_data)
+        serializer = UserCreateSerializer(data=user_data)
 
         if serializer.is_valid():
             serializer.save()
@@ -74,7 +89,7 @@ class UserCreator:
             return serializer.instance
 
     def create_employer(self, user_data) -> Optional[User]:
-        serializer = UserCreateSerializer(user_data)
+        serializer = UserCreateSerializer(data=user_data)
 
         if serializer.is_valid():
             serializer.save()
@@ -86,7 +101,7 @@ class UserCreator:
             return serializer.instance
 
     def get_user(self) -> User:
-        return User.objects.get_or_none(email=self.email)
+        return User.objects.get_or_none(email=self.data['email'])
 
     def verify_email(
         self,

@@ -46,6 +46,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
             raise exceptions.AuthenticationFailed("JWT token expired, please relogin to become new token")
 
         try:
+            print(f'{payload["id"]=}')
             user = User.objects.get(pk=payload['id'])
         except User.DoesNotExist:
             msg = 'No user matching this token was found.'
