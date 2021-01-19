@@ -67,7 +67,7 @@ pluggy==0.13.1
 prompt-toolkit==3.0.8
 psycopg2==2.8.6
 py==1.10.0
-py-moneyed==0.8.0
+py-moneyed==1.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycodestyle==2.6.0
