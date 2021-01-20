@@ -191,3 +191,42 @@ def test_creator_send_email(creator, performer_role):
     )
 
     assert mail == 1
+
+
+def test_user_creator_not_enought_fields(creator, performer_role):
+    with pytest.raises(TypeError):
+        creator(
+            username='test',
+            email='test@py.com',
+            password='1234',
+            role=performer_role.id
+        )()
+
+
+def test_user_creator_wrong_role(creator):
+    with pytest.raises(TypeError) as role_error:
+        creator(
+                username='test',
+                email='test@py.com',
+                password='1234',
+                first_name='oleh',
+                last_name="pykulytsky",
+                role=100500
+            )()
+    
+    assert "No role with such id" in str(role_error.value)
+
+
+def test_user_creator(creator, performer_role):
+    user_creator = creator(
+                username='test2',
+                email='test2@py.com',
+                password='1234',
+                first_name='oleh',
+                last_name="pykulytsky",
+                role=performer_role.id,
+                rating=10
+            )
+    user = user_creator()
+
+    assert user.rating == 10
