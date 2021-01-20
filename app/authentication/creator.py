@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from .models import Role, User
 
@@ -65,6 +66,9 @@ class UserCreator:
     def __call__(self) -> User:
         user = self.create()
 
+        if user is None:
+            raise ValidationError("Cant create user")
+
         self.verify_email(
             user.email_verification_code,
             self.verification_url
@@ -74,15 +78,18 @@ class UserCreator:
         return user
 
     def create(self):
-        if self.data['role'] == 1:
-            self.user = self.get_user() or self.create_performer()
+        try:
+            if int(self.data['role']) == 1:
+                self.user = self.get_user() or self.create_performer()
 
-        elif self.data['role'] == 2:
-            self.user = self.get_user() or self.create_employer()
+            elif int(self.data['role']) == 2:
+                self.user = self.get_user() or self.create_employer()
 
-        else:
-            raise TypeError("No role with such id")
-        return self.user
+            else:
+                raise TypeError(f"No role with such id({self.data['role']})")
+            return self.user
+        except ValueError:
+            raise ValidationError('Role must be integer like')
 
     def create_performer(self) -> Optional[User]:
         serializer = UserCreateDetailSerializer(data=self.data)
@@ -91,6 +98,8 @@ class UserCreator:
             serializer.save()
 
             return serializer.instance
+        else:
+            raise ValidationError(serializer.errors)
 
     def create_employer(self) -> Optional[User]:
         serializer = UserCreateDetailSerializer(data=self.data)
@@ -99,6 +108,8 @@ class UserCreator:
             serializer.save()
 
             return serializer.instance
+        else:
+            raise ValidationError(serializer.errors)
 
     def get_user(self) -> User:
         return User.objects.get_or_none(email=self.data['email'])

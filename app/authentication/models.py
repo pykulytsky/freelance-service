@@ -149,10 +149,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.first_name = self.first_name.capitalize()
         self.last_name = self.last_name.capitalize()
 
-        # move to service object
-        # if self.role.id == 2 and not self.user_verified:
-        #     raise ValidationError("Usert with that role must be verified")
-            
         super().save(*args, **kwargs)
 
     def __str__(self):
