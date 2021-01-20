@@ -57,14 +57,35 @@ class RegisterAPI(APIView):
 
 
 class ActivateUserAPI(APIView):
-    pass
+    permission_classes = (IsAuthenticated, )
+    
+    def post(self, request):
+        if request.user.is_active == False:
+            request.user.is_active = True
+            request.user.save()
+            return Response({'info': 'activated'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'info': 'user already activated'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserDetailAPI(APIView):
+class DeactivateUserAPI(APIView):
+    permission_classes = (IsAuthenticated, )
+    
+    def post(self, request):
+        if request.user.is_active == True:
+            request.user.is_active = False
+            request.user.save()
+            return Response({'info': 'deactivated'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'info': 'user already deactivated'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = UserCreateDetailSerializer
 
-    def get(self, request):
-        print(f'{request.user=}')
 
-        return Response({'some': 'text'}, status=status.status.HTTP_200_OK)
+    def get(self, request):
+        serializer = self.serializer_class(request.user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

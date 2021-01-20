@@ -149,6 +149,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.first_name = self.first_name.capitalize()
         self.last_name = self.last_name.capitalize()
 
+        if self.is_superuser and self.is_staff:
+            self.is_active = True
+
         super().save(*args, **kwargs)
 
     def __str__(self):

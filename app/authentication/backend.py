@@ -55,6 +55,9 @@ class JWTAuthentication(authentication.BaseAuthentication):
             if not user.is_active and 'activate' not in request._request.environ.get("PATH_INFO", '').split('/'):
                 message = 'Inactive user'
                 raise exceptions.AuthenticationFailed(message)
+            if not user.is_active and 'deactivate' not in request._request.environ.get("PATH_INFO", '').split('/'):
+                message = 'Inactive user'
+                raise exceptions.AuthenticationFailed(message)
         except AttributeError:
             if not user.is_active:
                 message = 'Inactive user'
