@@ -1,4 +1,3 @@
-from _pytest.fixtures import fixture
 import pytest
 
 from rest_framework.test import APIClient
@@ -8,6 +7,7 @@ from authentication.backend import JWTAuthentication
 
 from mixer.backend.django import mixer as _mixer
 from authentication.creator import UserCreator
+
 
 @pytest.fixture
 def mixer():
@@ -48,11 +48,12 @@ def user(django_user_model, employer_role, mixer):
         role=employer_role,
         is_active=True)
 
+
 @pytest.fixture
 def inactive_user(django_user_model, performer_role, mixer):
     return mixer.blend(
         django_user_model,
-        role = performer_role,
+        role=performer_role,
     )
 
 
@@ -86,3 +87,13 @@ def creator():
 @pytest.fixture
 def creator_mail(mocker):
     return mocker.patch('UserCreator.send_email')
+
+
+@pytest.fixture
+def active_api(active_user):
+    client = APIClient()
+
+    token = active_user.token
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
+
+    return client

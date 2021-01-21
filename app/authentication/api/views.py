@@ -39,9 +39,9 @@ class RegisterAPI(APIView):
     serializer_class = UserCreateSerializer
 
     def post(self, request):
-        
+
         serializer = self.serializer_class(data=request.data)
-        
+
         if serializer.is_valid():
             new_user = UserCreator(**serializer.data)()
 
@@ -58,9 +58,9 @@ class RegisterAPI(APIView):
 
 class ActivateUserAPI(APIView):
     permission_classes = (IsAuthenticated, )
-    
+
     def post(self, request):
-        if request.user.is_active == False:
+        if request.user.is_active is False:
             request.user.is_active = True
             request.user.save()
             return Response({'info': 'activated'}, status=status.HTTP_200_OK)
@@ -70,9 +70,9 @@ class ActivateUserAPI(APIView):
 
 class DeactivateUserAPI(APIView):
     permission_classes = (IsAuthenticated, )
-    
+
     def post(self, request):
-        if request.user.is_active == True:
+        if request.user.is_active is True:
             request.user.is_active = False
             request.user.save()
             return Response({'info': 'deactivated'}, status=status.HTTP_200_OK)
@@ -83,7 +83,6 @@ class DeactivateUserAPI(APIView):
 class UserDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = UserCreateDetailSerializer
-
 
     def get(self, request):
         serializer = self.serializer_class(request.user)

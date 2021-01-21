@@ -1,5 +1,5 @@
 import pytest
-from authentication.creator import RoleSerializer, UserCreateSerializer
+from authentication.creator import UserCreateSerializer
 
 pytestmark = [pytest.mark.django_db]
 
@@ -29,7 +29,7 @@ def test_creator_user_serializer_is_work(performer_role):
     }
 
     serializer = UserCreateSerializer(data=user_data)
-    
+
     assert serializer.is_valid()
     serializer.save()
     assert serializer.errors == {}

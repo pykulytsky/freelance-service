@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 import authentication.validators as custom_validators
 
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 
 from jwt.exceptions import *
 import jwt
@@ -15,7 +15,7 @@ from datetime import datetime
 from datetime import timedelta
 
 from django_countries.fields import CountryField
-from behaviors.behaviors import Timestamped
+
 
 class BaseAuthManager(BaseUserManager):
     def get_or_none(self, **kwargs):
@@ -45,7 +45,7 @@ class UserManager(BaseAuthManager):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(username, email, password, **extra_fields)
-        
+
     def create(self, username, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
@@ -84,7 +84,7 @@ class Role(models.Model):
         primary_key=True)
 
     def __str__(self):
-      return self.get_id_display()
+        return self.get_id_display()
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -197,7 +197,7 @@ class Company(models.Model):
     name = models.CharField(
         max_length=512,
         verbose_name="Company name")
-    
+
     country = CountryField()
     address = models.CharField(
         max_length=1024,

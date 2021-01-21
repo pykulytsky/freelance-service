@@ -40,9 +40,9 @@ class JWTAuthentication(authentication.BaseAuthentication):
             raise exceptions.AuthenticationFailed(message)
 
         if payload.get(
-                'exp', 
-                datetime.now().timestamp()
-                ) < datetime.now().timestamp():
+            'exp',
+            datetime.now().timestamp()
+        ) < datetime.now().timestamp():
             raise exceptions.AuthenticationFailed("JWT token expired, please relogin to become new token")
 
         try:
@@ -50,16 +50,20 @@ class JWTAuthentication(authentication.BaseAuthentication):
         except User.DoesNotExist:
             msg = 'No user matching this token was found.'
             raise exceptions.AuthenticationFailed(msg)
-        
+
         try:
-            if not user.is_active and 'activate' not in request._request.environ.get("PATH_INFO", '').split('/'):
-                message = 'Inactive user'
-                raise exceptions.AuthenticationFailed(message)
-            if not user.is_active and 'deactivate' not in request._request.environ.get("PATH_INFO", '').split('/'):
-                message = 'Inactive user'
-                raise exceptions.AuthenticationFailed(message)
+            if not user.is_activate:
+
+                if 'activate' not in request._request.environ.get("PATH_INFO", '/activate/').split('/'):
+                    message = 'Inactive user'
+                    raise exceptions.AuthenticationFailed(message)
+
+                if 'deactivate' not in request._request.environ.get("PATH_INFO", '').split('/'):
+                    message = 'Inactive user'
+                    raise exceptions.AuthenticationFailed(message)
+
         except AttributeError:
-            if not user.is_active:
+            if not user.is_active and 'activate' not in str(request):
                 message = 'Inactive user'
                 raise exceptions.AuthenticationFailed(message)
 

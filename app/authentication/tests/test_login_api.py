@@ -30,6 +30,6 @@ def test_login_active_user(api, active_user):
             'password': active_user.password,
             'email': active_user.email
         })
-    
+
     assert response.status_code == 200
     assert response.data['token'] == active_user.token

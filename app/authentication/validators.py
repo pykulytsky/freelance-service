@@ -15,7 +15,7 @@ def validate_age(age):
 def percent_validation(percent):
     if isinstance(percent, Decimal):
         if 100 < percent < 0:
-            raise ValidationError(f"Percent must be between 0.0 and 100.0 not{percent}") 
+            raise ValidationError(f"Percent must be between 0.0 and 100.0 not{percent}")
     else:
         raise ValidationError("Percent must be decimal like object")
 

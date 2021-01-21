@@ -1,4 +1,4 @@
-from authentication.models import User, Role
+from authentication.models import User
 from rest_framework.authentication import authenticate
 from rest_framework import serializers
 
@@ -42,7 +42,7 @@ class LoginSerializer(serializers.Serializer):
 
         if password is None:
             serializers.ValidationError('Для входу потрібен пароль.')
-        
+
         user = authenticate(username=email, password=password)
 
         if user is None:
@@ -55,4 +55,3 @@ class LoginSerializer(serializers.Serializer):
             'token': user.token,
             'pk': user.pk
         }
-

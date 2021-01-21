@@ -12,10 +12,10 @@ def test_token_enought_fields(superuser):
 
     payload = jwt.decode(token, settings.SECRET_KEY)
 
-    assert payload.get('id', None) != None
-    assert payload.get('exp', None) != None
-    assert payload.get('role', None) != None
-    assert payload.get('is_superuser', None) != None
+    assert payload.get('id', None) is not None
+    assert payload.get('exp', None) is not None
+    assert payload.get('role', None) is not None
+    assert payload.get('is_superuser', None) is not None
 
 
 def test_token_match_fields(superuser):
@@ -33,17 +33,17 @@ def test_user_by_token_payload(superuser):
 
     payload = jwt.decode(token, settings.SECRET_KEY)
 
-    assert payload.get('id', None) != None
+    assert payload.get('id', None) is not None
     assert superuser.id == payload['id']
-    assert User.objects.get_or_none(id=payload['id']) != None 
+    assert User.objects.get_or_none(id=payload['id']) is not None
 
 
 def test_base_token_expired(superuser):
-   token = superuser.token
+    token = superuser.token
 
-   payload = jwt.decode(token, settings.SECRET_KEY)
+    payload = jwt.decode(token, settings.SECRET_KEY)
 
-   assert payload['exp'] > datetime.now().timestamp()
+    assert payload['exp'] > datetime.now().timestamp()
 
 
 def test_user_role_by_token_payload(superuser):
@@ -52,5 +52,4 @@ def test_user_role_by_token_payload(superuser):
     payload = jwt.decode(token, settings.SECRET_KEY)
 
     assert payload['role'] == superuser.role.id
-    assert Role.objects.get_or_none(id=payload['role']) != None
-
+    assert Role.objects.get_or_none(id=payload['role']) is not None

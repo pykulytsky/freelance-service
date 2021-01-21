@@ -1,7 +1,8 @@
-from django.urls.base import reverse
+from datetime import datetime
 import pytest
 from django.urls import reverse
-from rest_framework.authentication import authenticate
+import jwt
+from django.conf import settings
 
 from rest_framework import exceptions
 
@@ -82,7 +83,7 @@ def test_backend_with_wrong_auth_credentials(api, backend):
         backend.authenticate(request)
 
 
-def test_backend_access_active_user_exception_on_protected_endpoint(api, backend, active_user):
+def test_backend_access_active_user_exception_on_protected_endpoint(api, backend):
     url = reverse('test')
     response = api.get(url)
 
@@ -90,3 +91,25 @@ def test_backend_access_active_user_exception_on_protected_endpoint(api, backend
 
     with pytest.raises(exceptions.AuthenticationFailed):
         backend.authenticate(request)
+
+
+def test_backend_success(active_api, backend, active_user):
+    url = reverse('test')
+    response = active_api.get(url)
+    request = response.wsgi_request
+
+    user = backend.authenticate(request)
+
+    assert active_user == user[0]
+
+
+def test_backend_success_token(active_api, backend, active_user):
+    url = reverse('test')
+    response = active_api.get(url)
+    request = response.wsgi_request
+
+    user = backend.authenticate(request)
+    token = jwt.decode(user[1], settings.SECRET_KEY)
+
+    assert token['id'] == active_user.id
+    assert token['exp'] > datetime.now().timestamp()

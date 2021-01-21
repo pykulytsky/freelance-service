@@ -1,4 +1,3 @@
-import re
 import pytest
 from django.urls import reverse
 import jwt

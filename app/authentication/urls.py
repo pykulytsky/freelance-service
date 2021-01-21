@@ -1,5 +1,4 @@
 from django.urls import path
-from django.urls import include
 
 from .api.views import LoginAPIView, TestAPI, RegisterAPI, ActivateUserAPI, DeactivateUserAPI, UserDetailAPI
 
