@@ -43,8 +43,6 @@ class Job(Timestamped):
 
     views = models.PositiveIntegerField(default=0)
 
-
-
     class Meta:
         unique_together = ('author', 'performer')
 
@@ -60,6 +58,7 @@ class FavoritesJobs(Timestamped):
         on_delete=models.CASCADE,
         related_name="favorites_jobs"
     )
+
 
 class AttachedFile(models.Model):
     file = models.FileField(upload_to="files/")
@@ -91,6 +90,5 @@ class Feedback(Timestamped):
         on_delete=models.CASCADE
     )
 
-    
     class Meta:
         unique_together = ('author', 'performer')

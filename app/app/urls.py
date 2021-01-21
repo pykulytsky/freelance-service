@@ -23,24 +23,20 @@ from rest_framework import permissions
 
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Todolist API",
-      default_version='v1',
-      description="This backend provide custom JWT auth for users and work with todos and todolists",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="contact@snippets.local"),
-      license=openapi.License(name="BSD License"),
+    openapi.Info(
+        title="Todolist API",
+        default_version='v1',
+        description="This backend provide custom JWT auth for users and work with todos and todolists",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="contact@snippets.local"),
+        license=openapi.License(name="BSD License"),
    ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
-
-def trigger_error(request):
-    division_by_zero = 1 / 0
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('sentry-debug/', trigger_error),
 
     path('swagger/<str:format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
@@ -48,7 +44,7 @@ urlpatterns = [
 
 
     path('api/auth/', include('authentication.urls'))
-    
+
 ]
 
 urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]

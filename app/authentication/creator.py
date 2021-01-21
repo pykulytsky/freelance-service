@@ -1,16 +1,11 @@
 import uuid
 from typing import Optional, Union
 
-from django.conf import settings
-
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from .models import Role, User
+from .tasks import send_email_test
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -124,21 +119,10 @@ class UserCreator:
         verification_link: str
     ) -> Union[int, None]:
 
-        html_message = render_to_string(
-            template_name='authentication/mail.html',
-            context={
-                'verification_link': verification_link,
-                'verification_code': verification_code
-            }
-        )
-        plain_message = strip_tags(html_message)
-
-        _mail = send_mail(
-            'Please verify your account',
-            plain_message,
-            settings.EMAIL_HOST_USER,
-            [self.data['email']],
-            fail_silently=False
+        _mail = send_email_test.delay(
+            self.data['email'],
+            verification_link,
+            verification_code
         )
 
         return _mail
