@@ -4,5 +4,3 @@ class EmailNotValid(Exception):
 
 class UserRoleError(Exception):
     pass
-
-

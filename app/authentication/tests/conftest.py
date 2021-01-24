@@ -100,5 +100,10 @@ def active_api(active_user):
 
 
 @pytest.fixture(autouse=True)
-def us_debug_true(settings):
+def use_debug_true(settings):
     settings.DEBUG = True
+
+
+@pytest.fixture
+def use_debug_false(settings):
+    settings.DEBUG = False

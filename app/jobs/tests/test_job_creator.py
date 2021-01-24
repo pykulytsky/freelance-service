@@ -56,7 +56,7 @@ def test_job_creator_send_mail_to_creator(creator, superuser, mocker):
 
     mocker.patch('jobs.creator.JobCreator.notify_creator')
 
-    job = job_creator()
+    job_creator()
 
     assert job_creator.notify_creator.assert_called_once()
 
@@ -72,13 +72,13 @@ def test_job_creator_call_create_room_method(creator, superuser, mocker):
 
     mocker.patch('jobs.creator.JobCreator.create_room')
 
-    job = job_creator()
+    job_creator()
 
     assert job_creator.create_room.assert_called_once()
 
 
 def test_job_creator_create_room(creator, superuser):
-    job = creator(
+    creator(
         author=superuser,
         title='write binary tree generator with css',
         description='it`s ez',

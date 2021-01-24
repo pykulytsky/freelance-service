@@ -27,8 +27,7 @@ def send_verification_mail_test(mail: EmailMessage):
 def send_verification_mail(
         receiver_email,
         verification_link,
-        verification_code
-    ):
+        verification_code):
     template = get_template('authentication/mail.html')
     context = {
         'verification_link': verification_link,

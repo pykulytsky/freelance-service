@@ -72,7 +72,7 @@ class UserCreator:
 
         if user is None:
             raise ValidationError("Can`t create user")
-        
+
         if settings.DEBUG is False:
             if validate_email(self.data['email']):
                 self.verify_email(
@@ -84,9 +84,9 @@ class UserCreator:
                 raise EmailNotValid("Your email is not valid.")
         else:
             self.verify_email(
-                    user.email_verification_code,
-                    self.verification_url
-                )
+                user.email_verification_code,
+                self.verification_url
+            )
             self.subscribe()
         return user
 

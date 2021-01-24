@@ -1,4 +1,4 @@
-from authentication.exceptions import UserRoleError
+from authentication.exceptions import EmailNotValid, UserRoleError
 from authentication.models import User
 import pytest
 
@@ -242,7 +242,7 @@ def test_superuser_always_active(superuser):
 
 
 def test_user_creator_create_user(creator, performer_role):
-    user_creator = creator(
+    creator(
         username='test2',
         email='test2@py.com',
         password='1234',
@@ -253,3 +253,17 @@ def test_user_creator_create_user(creator, performer_role):
     )()
 
     assert User.objects.get_or_none(email='test2@py.com') is not None
+
+
+def test_user_creator_validate_email_address(creator, performer_role, settings):
+    settings.DEBUG = False
+    with pytest.raises(EmailNotValid):
+        creator(
+            username='test2',
+            email='test2@py.com',
+            password='1234',
+            first_name='oleh',
+            last_name="pykulytsky",
+            role=performer_role.id,
+            rating=10
+        )()

@@ -1,8 +1,8 @@
 from typing import Iterable, Optional
 
-from app.integrations.mailchimp.http import MailchimpHTTP
-from app.integrations.mailchimp.member import MailchimpMember
-from users.models import User
+from authentication.mailchimp.http import MailchimpHTTP
+from authentication.mailchimp.member import MailchimpMember
+from authentication.models import User
 
 
 class AppMailchimp:

@@ -1,7 +1,7 @@
 import hashlib
 from dataclasses import dataclass
 
-from users.models import User
+from authentication.models import User
 
 
 @dataclass

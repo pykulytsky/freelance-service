@@ -1,5 +1,4 @@
 from datetime import datetime
-from django.db.models.fields import DateTimeField
 from authentication.models import User
 from rest_framework import serializers
 
@@ -38,7 +37,7 @@ class JobCreator:
 
         if not self.data['author'].is_active:
             raise ValueError("User must be active to create job")
-    
+
     def __call__(self):
 
         self.room = self.create_room()

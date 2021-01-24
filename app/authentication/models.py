@@ -30,9 +30,9 @@ class UserManager(BaseAuthManager):
 
     def _create_user(self, username, email, password=None, **extra_fields):
         if not username:
-            raise ValueError("В користувача не встановлено ім’я.")
+            raise ValueError("The user does not have a name.")
         if not email:
-            raise ValueError("Не вказано електронну пошту.")
+            raise ValueError("No email specified.")
 
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
@@ -58,10 +58,10 @@ class UserManager(BaseAuthManager):
         extra_fields.setdefault('is_active', True)
 
         if extra_fields.get('is_staff') is not True:
-            raise ValueError('Суперкористувач повинен мати is_staff=True.')
+            raise ValueError('The superuser must have is_staff=True.')
 
         if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Суперкористувач повинен мати is_superuser=True.')
+            raise ValueError('The superuser must have is_superuser=True.')
 
         return self._create_user(username, email, password, **extra_fields)
 
