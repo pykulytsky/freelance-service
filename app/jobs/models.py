@@ -15,7 +15,7 @@ class Job(Timestamped):
         verbose_name="Job name")
     description = models.CharField(max_length=8192)
 
-    deadline = models.DateField()
+    deadline = models.DateField(blank=True)
 
     author = models.ForeignKey(
         User,

@@ -97,3 +97,8 @@ def active_api(active_user):
     client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
 
     return client
+
+
+@pytest.fixture(autouse=True)
+def us_debug_true(settings):
+    settings.DEBUG = True

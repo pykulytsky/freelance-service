@@ -7,7 +7,9 @@ pytestmark = [pytest.mark.django_db]
 
 
 def test_activate_user(superuser, api):
-    url = reverse('activate')
+    url = reverse('activate', kwargs={
+        'code': superuser.email_verification_code
+    })
 
     response = api.post(url)
 

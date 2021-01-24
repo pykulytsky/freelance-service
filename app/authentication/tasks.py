@@ -6,7 +6,7 @@ from django.conf import settings
 
 
 @app.task
-def send_verification_mail(mail: EmailMessage):
+def send_verification_mail_test(mail: EmailMessage):
     if isinstance(mail, EmailMessage):
         raise TypeError("Mail is not EmailMessage object.")
 
@@ -24,7 +24,11 @@ def send_verification_mail(mail: EmailMessage):
 
 
 @app.task
-def send_email_test(receiver_email, verification_link, verification_code):
+def send_verification_mail(
+        receiver_email,
+        verification_link,
+        verification_code
+    ):
     template = get_template('authentication/mail.html')
     context = {
         'verification_link': verification_link,

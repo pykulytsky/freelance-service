@@ -191,6 +191,7 @@ MEDIA_URL = 'media/'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_BACKEND_URL = 'rpc://'
 
 CELERY_ACCEPT_CONTENT = ['json', ]
 CELERY_TASK_SERIALIZER = 'json'
@@ -213,3 +214,6 @@ CELERYBEAT_SCHEDULE = {
         'kwargs': {}  # For custom arguments
     }
 }
+
+HUNTER_API_KEY = config('HUNTER_API_KEY')
+MAILBOXLAYER_API_KEY = config('MAILBOXLAYER_API_KEY')

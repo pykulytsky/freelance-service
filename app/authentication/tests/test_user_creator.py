@@ -1,6 +1,6 @@
+from authentication.exceptions import UserRoleError
 from authentication.models import User
 import pytest
-from celery import Celery
 
 pytestmark = [pytest.mark.django_db]
 
@@ -120,7 +120,7 @@ def test_creator_emit_common_create_method(mocker, creator, performer_role):
     )
     mocker.patch('authentication.creator.UserCreator.create')
 
-    user = user_creator()
+    user_creator()
 
     user_creator.create.assert_called_once()
 
@@ -179,7 +179,7 @@ def test_creator_emit_subscribe_method(mocker, creator, performer_role):
 def test_creator_send_email(creator, performer_role):
     user_creator = creator(
         username='test',
-        email='pykulytsky@gmail.com',
+        email='pykulytsky1@gmail.com',
         password='1234',
         first_name='oleh',
         last_name="pykulytsky",
@@ -193,7 +193,8 @@ def test_creator_send_email(creator, performer_role):
         'http://localhost:8080/verify/'
     )
 
-    assert isinstance(mail.app, Celery)
+    for result in mail:
+        assert 1 == result[1]
 
 
 def test_user_creator_not_enought_fields(creator, performer_role):
@@ -207,7 +208,7 @@ def test_user_creator_not_enought_fields(creator, performer_role):
 
 
 def test_user_creator_wrong_role(creator):
-    with pytest.raises(TypeError) as role_error:
+    with pytest.raises(UserRoleError) as role_error:
         creator(
             username='test',
             email='test@py.com',
@@ -238,3 +239,17 @@ def test_user_creator(creator, performer_role):
 @pytest.mark.xfail(strict=True)
 def test_superuser_always_active(superuser):
     assert superuser.is_active
+
+
+def test_user_creator_create_user(creator, performer_role):
+    user_creator = creator(
+        username='test2',
+        email='test2@py.com',
+        password='1234',
+        first_name='oleh',
+        last_name="pykulytsky",
+        role=performer_role.id,
+        rating=10
+    )()
+
+    assert User.objects.get_or_none(email='test2@py.com') is not None

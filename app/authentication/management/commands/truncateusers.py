@@ -8,5 +8,5 @@ class Command(BaseCommand):
         for user in User.objects.all():
             self.stdout.write(f'Delete {user}...')
             user.delete()
-            self.stdout.write('Done')
+            self.stdout.write('Done.')
         self.stdout.write('All users has been deleted.')

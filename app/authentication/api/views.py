@@ -59,10 +59,12 @@ class RegisterAPI(APIView):
 class ActivateUserAPI(APIView):
     permission_classes = (IsAuthenticated, )
 
-    def post(self, request):
+    def post(self, request, code):
         if request.user.is_active is False:
-            request.user.is_active = True
-            request.user.save()
+            if request.user.email_verification_code == code:
+                request.user.is_active = True
+                request.user.email_verified = True
+                request.user.save()
             return Response({'info': 'activated'}, status=status.HTTP_200_OK)
         else:
             return Response({'info': 'user already activated'}, status=status.HTTP_400_BAD_REQUEST)

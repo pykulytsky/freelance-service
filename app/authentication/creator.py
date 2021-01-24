@@ -5,7 +5,12 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from .models import Role, User
-from .tasks import send_email_test
+from .tasks import send_verification_mail
+from .exceptions import *
+
+from .mailboxlayer import validate_email
+
+from django.conf import settings
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -66,14 +71,23 @@ class UserCreator:
         user = self.create()
 
         if user is None:
-            raise ValidationError("Cant create user")
-
-        self.verify_email(
-            user.email_verification_code,
-            self.verification_url
-        )
-        self.subscribe()
-
+            raise ValidationError("Can`t create user")
+        
+        if settings.DEBUG is False:
+            if validate_email(self.data['email']):
+                self.verify_email(
+                    user.email_verification_code,
+                    self.verification_url
+                )
+                self.subscribe()
+            else:
+                raise EmailNotValid("Your email is not valid.")
+        else:
+            self.verify_email(
+                    user.email_verification_code,
+                    self.verification_url
+                )
+            self.subscribe()
         return user
 
     def create(self):
@@ -85,10 +99,10 @@ class UserCreator:
                 self.user = self.get_user() or self.create_employer()
 
             else:
-                raise TypeError(f"No role with such id({self.data['role']})")
+                raise UserRoleError(f"No role with such id({self.data['role']})")
             return self.user
         except ValueError:
-            raise ValidationError('Role must be integer like')
+            raise UserRoleError('Role must be integer like')
 
     def create_performer(self) -> Optional[User]:
         serializer = UserCreateDetailSerializer(data=self.data)
@@ -119,13 +133,13 @@ class UserCreator:
         verification_link: str
     ) -> Union[int, None]:
 
-        _mail = send_email_test.delay(
+        _mail = send_verification_mail.delay(
             self.data['email'],
             verification_link,
             verification_code
         )
 
-        return _mail
+        return _mail.collect()
 
     def subscribe(self):
         pass
