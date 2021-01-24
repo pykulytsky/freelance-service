@@ -35,7 +35,8 @@ def superuser(django_user_model, performer_role, mixer):
         django_user_model,
         role=performer_role,
         is_superuser=True,
-        si_staff=True)
+        si_staff=True,
+        is_active=True)
 
 
 @pytest.fixture

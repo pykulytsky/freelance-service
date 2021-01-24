@@ -4,3 +4,7 @@ class EmailNotValid(Exception):
 
 class UserRoleError(Exception):
     pass
+
+
+class UserNotActive(Exception):
+    pass

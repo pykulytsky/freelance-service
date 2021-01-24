@@ -267,3 +267,4 @@ def test_user_creator_validate_email_address(creator, performer_role, settings):
             role=performer_role.id,
             rating=10
         )()
+    

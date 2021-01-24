@@ -1,12 +1,23 @@
 from django.db import models
 from behaviors.behaviors import Timestamped
+from django.db.models.manager import Manager
 import authentication.validators as custom_validators
+from django.core.exceptions import ObjectDoesNotExist
 
 from authentication.models import User
 
 from chat.models import Room
 
 from djmoney.models.fields import MoneyField
+
+
+
+class BaseJobManager(Manager):
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except ObjectDoesNotExist:
+            return None
 
 
 class Job(Timestamped):
@@ -43,6 +54,8 @@ class Job(Timestamped):
 
     views = models.PositiveIntegerField(default=0)
 
+    objects = BaseJobManager()
+
     class Meta:
         unique_together = ('author', 'performer')
 
@@ -58,6 +71,8 @@ class FavoritesJobs(Timestamped):
         on_delete=models.CASCADE,
         related_name="favorites_jobs"
     )
+
+    objects = BaseJobManager()
 
 
 class AttachedFile(models.Model):

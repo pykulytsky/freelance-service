@@ -2,9 +2,22 @@ from django.db import models
 from behaviors.behaviors import Timestamped
 from django.conf import settings
 
+from django.db.models.manager import Manager
+from django.core.exceptions import ObjectDoesNotExist
+
+
+class BaseRoomManager(Manager):
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except ObjectDoesNotExist:
+            return None
+
 
 class Room(Timestamped):
     name = models.CharField(max_length=256, verbose_name="Room name")
+
+    objects = BaseRoomManager()
 
 
 class Message(Timestamped):
