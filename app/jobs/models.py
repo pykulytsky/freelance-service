@@ -11,7 +11,6 @@ from chat.models import Room
 from djmoney.models.fields import MoneyField
 
 
-
 class BaseJobManager(Manager):
     def get_or_none(self, **kwargs):
         try:

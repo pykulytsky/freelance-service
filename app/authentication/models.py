@@ -182,12 +182,8 @@ class User(AbstractBaseUser, PermissionsMixin):
                 'role': self.role.id,
                 'is_superuser': int(self.is_superuser)
             }, settings.SECRET_KEY, algorithm='HS256')
-        except (InvalidTokenError, DecodeError, InvalidAlgorithmError,
-                InvalidAudienceError, ExpiredSignatureError, ImmatureSignatureError,
-                InvalidIssuedAtError, InvalidIssuerError, ExpiredSignature,
-                InvalidAudience, InvalidIssuer, MissingRequiredClaimError,
-                InvalidSignatureError,
-                PyJWTError):
+        except (InvalidTokenError, InvalidAlgorithmError,
+                InvalidAudienceError, ExpiredSignatureError, ImmatureSignatureError, PyJWTError):
             raise ValueError("Error occured while generating jwt token")
 
         return token.decode('utf-8')

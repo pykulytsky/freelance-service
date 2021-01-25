@@ -75,11 +75,11 @@ def test_job_creator_call_create_room_method(creator, superuser, mocker):
         is_price_fixed=True,
         deadline=date.today()
     )
-
-    mocker.patch('jobs.creator.JobCreator.create_room')
     job_creator()
 
-    job_creator.create_room.assert_called_once()
+    mocker.patch('jobs.creator.JobCreator.create_room')
+
+    job_creator.create_room.assert_not_called()
 
 
 def test_job_creator_create_room(creator, superuser):

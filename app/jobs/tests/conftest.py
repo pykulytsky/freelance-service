@@ -1,5 +1,6 @@
 from authentication.models import Role
 import pytest
+import os
 
 from rest_framework.test import APIClient
 from mixer.backend.django import mixer as _mixer

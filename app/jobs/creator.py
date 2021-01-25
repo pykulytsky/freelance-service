@@ -1,5 +1,5 @@
-from datetime import date
-from typing import Optional
+from datetime import date, datetime
+from typing import Optional, Union
 
 from rest_framework.exceptions import ValidationError
 from authentication.models import User
@@ -9,9 +9,9 @@ from djmoney.money import Money
 
 from .models import Job
 from chat.models import Room
+from .tasks import send_email_after_create_job
 
 from authentication.exceptions import UserNotActive
-from .tasks import update_exchange
 
 
 class JobCreateSerializer(serializers.ModelSerializer):
@@ -28,7 +28,7 @@ class JobCreator:
         description: str,
         price: Money,
         is_price_fixed: bool,
-        deadline: date,
+        deadline: Union[date, str],
         plan: Optional[int] = None
     ) -> None:
         self.data = {
@@ -40,6 +40,11 @@ class JobCreator:
             'deadline': deadline,
             'plan': plan
         }
+        if isinstance(deadline, str):
+            self.data.update({
+                'deadline': datetime.strptime(deadline, '%Y-%m-%d').date(),
+            })
+
         self.author = author
 
         if not author.is_active:
@@ -72,4 +77,11 @@ class JobCreator:
             raise ValidationError(serializer.errors)
 
     def notify_creator(self):
-        pass
+        _mail = send_email_after_create_job.delay(
+            self.author.email,
+            datetime.now().strftime("%m/%d/%Y %H:%M"),
+            self.data['title'],
+            self.data['deadline'].strftime("%d/%m/%Y")
+        )
+
+        return _mail.collect()

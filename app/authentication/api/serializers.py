@@ -55,3 +55,25 @@ class LoginSerializer(serializers.Serializer):
             'token': user.token,
             'pk': user.pk
         }
+
+
+class UserPublicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'age',
+            'first_name',
+            'last_name',
+            'avatar',
+            'total_jobs_completed',
+            'rating',
+            'role',
+            'user_verified'
+        )
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
