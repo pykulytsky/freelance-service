@@ -60,7 +60,7 @@ mccabe==0.6.1
 mixer==7.1.2
 oauthlib==3.1.0
 packaging==20.8
-parso==0.7.1
+parso==0.8.1
 pickleshare==0.7.5
 Pillow==8.0.1
 pluggy==0.13.1
