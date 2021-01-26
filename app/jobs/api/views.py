@@ -34,7 +34,7 @@ class JobListAPI(generics.ListCreateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class JobDetailAPI(generics.RetrieveAPIView):
+class JobDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, JobOwnerPermission]
     lookup_field = 'id'
     queryset = Job.objects.all()

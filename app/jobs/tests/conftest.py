@@ -41,6 +41,14 @@ def superuser(django_user_model, performer_role, mixer):
 
 
 @pytest.fixture
+def active_user(django_user_model, performer_role, mixer):
+    return mixer.blend(
+        django_user_model,
+        role=performer_role,
+        is_active=True)
+
+
+@pytest.fixture
 def active_api(active_user):
     client = APIClient()
 
@@ -68,3 +76,15 @@ def performer_role():
 @pytest.fixture
 def employer_role():
     return Role.objects.create(id=2)
+
+
+@pytest.fixture
+def job(mixer, superuser):
+    return mixer.blend('jobs.Job', author=superuser)
+
+
+@pytest.fixture
+def another_job(mixer, active_user):
+    return mixer.blend('jobs.Job', author=active_user)
+
+
