@@ -64,7 +64,7 @@ parso==0.7.1
 pickleshare==0.7.5
 Pillow==8.0.1
 pluggy==0.13.1
-prompt-toolkit==3.0.8
+prompt-toolkit==3.0.14
 psycopg2==2.8.6
 py==1.10.0
 py-moneyed==0.8.0
