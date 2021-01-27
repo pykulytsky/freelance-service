@@ -11,12 +11,9 @@ billiard==3.6.3.0
 celery==5.0.5
 certifi==2020.12.5
 cffi==1.14.4
-<<<<<<< HEAD
 chardet==3.0.4
-=======
 channels==3.0.3
 chardet==4.0.0
->>>>>>> a6a9fa959156418464580b26febe6012ca134357
 click==7.1.2
 click-didyoumean==0.0.3
 click-plugins==1.1.1
