@@ -8,19 +8,19 @@ pytestmark = [pytest.mark.django_db]
 
 def test_job_detail_api_success(api, job):
     url = reverse('job-detail', kwargs={'id': job.id})
-    
-    response = api.patch(url,{
+
+    response = api.patch(url, {
         'title': 'changed title'
     })
 
     assert response.status_code == 200
-    
+
 
 def test_job_detail_api_emit_save_method(api, job, mocker):
     url = reverse('job-detail', kwargs={'id': job.id})
     mocker.patch('jobs.models.Job.save')
 
-    response = api.patch(url,{
+    response = api.patch(url, {
         'title': 'changed title'
     })
 
@@ -33,7 +33,7 @@ def test_job_detail_api_access_not_author(api, another_job, mocker):
     mocker.patch('jobs.models.Job.save')
 
     with pytest.raises(PermissionError):
-        api.patch(url,{
+        api.patch(url, {
             'title': 'changed title'
         })
 
@@ -43,8 +43,8 @@ def test_job_detail_api_access_not_author(api, another_job, mocker):
 def test_job_detail_api_change_field(api, job):
     url = reverse('job-detail', kwargs={'id': job.id})
 
-    response = api.patch(url,{
-            'title': 'changed title'
+    response = api.patch(url, {
+        'title': 'changed title'
     })
 
     assert response.status_code == 200
@@ -57,7 +57,7 @@ def test_job_detail_api_delete_record(api, job):
     response = api.delete(url)
 
     assert response.status_code == 204
-    assert Job.objects.get_or_none(id=job.id) == None
+    assert Job.objects.get_or_none(id=job.id) is None
 
 
 def test_job_detail_api_get_record(api, job):
@@ -69,4 +69,3 @@ def test_job_detail_api_get_record(api, job):
     assert response.data['description'] == job.description
     assert response.data['title'] == job.title
     assert response.data['deadline'] == job.deadline.strftime('%Y-%m-%d')
-    

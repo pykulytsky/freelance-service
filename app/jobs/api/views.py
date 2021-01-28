@@ -2,13 +2,11 @@ from rest_framework.response import Response
 from jobs.models import *
 from .serializers import *
 
-from jobs.creator import JobCreateSerializer, JobCreator
+from jobs.creator import JobCreator
 
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from jobs.permissions import JobOwnerPermission
-
-from datetime import date, datetime
 
 
 class JobListAPI(generics.ListCreateAPIView):

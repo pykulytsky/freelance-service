@@ -33,6 +33,7 @@ class JobDetailSerializer(serializers.ModelSerializer):
         decimal_places=2,
     )
     author = UserPublicSerializer(read_only=True)
+
     class Meta:
         model = Job
         fields = '__all__'

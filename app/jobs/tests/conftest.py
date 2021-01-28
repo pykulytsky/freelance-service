@@ -1,6 +1,5 @@
 from authentication.models import Role
 import pytest
-import os
 
 from rest_framework.test import APIClient
 from mixer.backend.django import mixer as _mixer
@@ -59,11 +58,6 @@ def active_api(active_user):
 
 
 @pytest.fixture
-def job(mixer):
-    return mixer.blend('jobs.Job')
-
-
-@pytest.fixture
 def creator():
     return JobCreator
 
@@ -86,5 +80,3 @@ def job(mixer, superuser):
 @pytest.fixture
 def another_job(mixer, active_user):
     return mixer.blend('jobs.Job', author=active_user)
-
-
