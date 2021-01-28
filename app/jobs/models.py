@@ -60,12 +60,11 @@ class Job(Timestamped):
 
 
 class FavoritesJobs(Timestamped):
-    job = models.ForeignKey(
+    job = models.ManyToManyField(
         Job,
-        on_delete=models.CASCADE,
         related_name="favorites_list")
 
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         related_name="favorites_jobs"

@@ -69,3 +69,26 @@ def test_job_detail_api_get_record(api, job):
     assert response.data['description'] == job.description
     assert response.data['title'] == job.title
     assert response.data['deadline'] == job.deadline.strftime('%Y-%m-%d')
+
+
+@pytest.mark.parametrize(
+    'field,data',
+    [
+        ['id', 1],
+        ['title', 'changed title'],
+        ['description', 'changed description'],
+        ['deadline', '2020-09-09'],
+        ['price', '100'],
+        ['is_price_fixed', True],
+        ['views', 255]
+    ]
+)
+def test_job_detail_api_patch_each_field(api, job, field, data):
+    url = reverse('job-detail', kwargs={'id': job.id})
+
+    response = api.patch(url, {field: data})
+
+    if response.status_code == 400:
+        assert False, response.data
+    assert response.status_code == 200
+    assert str(data) in eval(f'str(Job.objects.get(id=job.id).{field})')

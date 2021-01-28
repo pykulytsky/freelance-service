@@ -9,8 +9,9 @@ from .tasks import send_verification_mail
 from .exceptions import *
 
 from .mailboxlayer import validate_email
-
 from django.conf import settings
+
+from jobs.models import FavoritesJobs
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -88,6 +89,8 @@ class UserCreator:
                 self.verification_url
             )
             self.subscribe()
+
+        self.create_favorite_jobs_list()
         return user
 
     def create(self):
@@ -143,3 +146,6 @@ class UserCreator:
 
     def subscribe(self):
         pass
+
+    def create_favorite_jobs_list(self):
+        return FavoritesJobs.objects.update_or_create(user=self.get_user())
