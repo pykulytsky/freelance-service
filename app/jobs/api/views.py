@@ -1,4 +1,5 @@
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from jobs.models import *
 from .serializers import *
 
@@ -37,3 +38,39 @@ class JobDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'id'
     queryset = Job.objects.all()
     serializer_class = JobDetailSerializer
+
+
+class FavoriteJobsAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
+    serializer_class = JobDetailSerializer
+
+    def get_queryset(self):
+        return FavoritesJobs.objects.get(user=self.request.user).jobs.all()
+
+    def post(self, request, id):
+        user = request.user
+        job = Job.objects.get(id=id)
+
+        favorites_list = FavoritesJobs.objects.get(user=user)
+        favorites_list.jobs.add(job)
+
+        serializer = self.serializer_class(job)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+
+class FavoriteJobsListAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        jobs = FavoritesJobs.objects.get(user=user).jobs.all()
+        serializer = JobListSerializer(jobs, many=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )

@@ -43,7 +43,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
             'exp',
             datetime.now().timestamp()
         ) < datetime.now().timestamp():
-            raise exceptions.AuthenticationFailed("JWT token expired, please relogin to become new token")
+            raise exceptions.AuthenticationFailed("JWT token expired, please relogin to get new token")
 
         try:
             user = User.objects.get(pk=payload['id'])

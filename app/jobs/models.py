@@ -52,6 +52,7 @@ class Job(Timestamped):
     )
 
     views = models.PositiveIntegerField(default=0)
+    published = models.BooleanField(default=False)
 
     objects = BaseJobManager()
 
@@ -60,7 +61,7 @@ class Job(Timestamped):
 
 
 class FavoritesJobs(Timestamped):
-    job = models.ManyToManyField(
+    jobs = models.ManyToManyField(
         Job,
         related_name="favorites_list")
 

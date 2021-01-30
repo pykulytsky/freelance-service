@@ -6,6 +6,7 @@ from mixer.backend.django import mixer as _mixer
 
 from jobs.creator import JobCreator
 
+from jobs.models import FavoritesJobs
 
 @pytest.fixture
 def mixer():
@@ -80,3 +81,8 @@ def job(mixer, superuser):
 @pytest.fixture
 def another_job(mixer, active_user):
     return mixer.blend('jobs.Job', author=active_user)
+
+
+@pytest.fixture
+def favorite_list(superuser):
+    return FavoritesJobs.objects.create(user=superuser)
