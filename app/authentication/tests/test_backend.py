@@ -109,7 +109,7 @@ def test_backend_success_token(active_api, backend, active_user):
     request = response.wsgi_request
 
     user = backend.authenticate(request)
-    token = jwt.decode(user[1], settings.SECRET_KEY)
+    token = jwt.decode(user[1], settings.SECRET_KEY, algorithms=['HS256'])
 
     assert token['id'] == active_user.id
     assert token['exp'] > datetime.now().timestamp()

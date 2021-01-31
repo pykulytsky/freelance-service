@@ -50,7 +50,6 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
     "djcelery_email",
     'djmoney',
-    'silk',
     'djmoney.contrib.exchange',
 ]
 
@@ -97,7 +96,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'silk.middleware.SilkyMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

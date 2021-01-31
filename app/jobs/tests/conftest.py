@@ -8,6 +8,7 @@ from jobs.creator import JobCreator
 
 from jobs.models import FavoritesJobs
 
+
 @pytest.fixture
 def mixer():
     return _mixer

@@ -58,7 +58,7 @@ def test_register_api_decode_token(anon_api, performer_role):
         }
     )
 
-    payload = jwt.decode(response.data['token'], settings.SECRET_KEY)
+    payload = jwt.decode(response.data['token'], settings.SECRET_KEY, algorithms=['HS256'])
 
     assert response.status_code == 200
     assert payload['role'] == performer_role.id
