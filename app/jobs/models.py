@@ -106,3 +106,25 @@ class Feedback(Timestamped):
 
     class Meta:
         unique_together = ('author', 'performer')
+
+
+class Proposal(Timestamped):
+    job = models.ForeignKey(
+        Job,
+        on_delete=models.CASCADE,
+        related_name="proposals"
+    )
+    performer = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="proposals"
+    )
+    approved = models.BooleanField(default=False)
+    description = models.CharField(max_length=2048)
+
+    price = MoneyField(
+        max_digits=14,
+        decimal_places=2,
+        default_currency='USD'
+    )
+    deadline = models.DateField(blank=True)

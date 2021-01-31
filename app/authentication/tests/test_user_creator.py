@@ -236,7 +236,6 @@ def test_user_creator(creator, performer_role):
     assert user.rating == 10
 
 
-@pytest.mark.xfail(strict=True)
 def test_superuser_always_active(superuser):
     assert superuser.is_active
 

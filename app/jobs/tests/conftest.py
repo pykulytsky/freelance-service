@@ -4,9 +4,17 @@ import pytest
 from rest_framework.test import APIClient
 from mixer.backend.django import mixer as _mixer
 
-from jobs.creator import JobCreator
-
+from jobs.creator import JobCreator, ProposalCreator
 from jobs.models import FavoritesJobs
+
+from PIL import Image
+
+
+@pytest.fixture
+def image():
+    img = Image.open('static/assets/assets/avatars/image.gif')
+
+    return img.filename
 
 
 @pytest.fixture
@@ -32,21 +40,24 @@ def api(superuser):
 
 
 @pytest.fixture
-def superuser(django_user_model, performer_role, mixer):
+def superuser(django_user_model, performer_role, mixer, image):
     return mixer.blend(
         django_user_model,
         role=performer_role,
         is_superuser=True,
         si_staff=True,
-        is_active=True)
+        is_active=True,
+        avatar=image)
 
 
 @pytest.fixture
-def active_user(django_user_model, performer_role, mixer):
+def active_user(django_user_model, performer_role, mixer, image):
     return mixer.blend(
         django_user_model,
         role=performer_role,
-        is_active=True)
+        is_active=True,
+        avatar=image
+    )
 
 
 @pytest.fixture
@@ -87,3 +98,8 @@ def another_job(mixer, active_user):
 @pytest.fixture
 def favorite_list(superuser):
     return FavoritesJobs.objects.create(user=superuser)
+
+
+@pytest.fixture
+def proposal_creator():
+    return ProposalCreator

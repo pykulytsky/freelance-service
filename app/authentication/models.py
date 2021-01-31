@@ -15,6 +15,9 @@ from datetime import datetime
 from datetime import timedelta
 
 from django_countries.fields import CountryField
+from creditcards.models import CardNumberField, CardExpiryField, SecurityCodeField
+
+from django.utils.translation import gettext as _
 
 
 class BaseAuthManager(BaseUserManager):
@@ -30,9 +33,9 @@ class UserManager(BaseAuthManager):
 
     def _create_user(self, username, email, password=None, **extra_fields):
         if not username:
-            raise ValueError("The user does not have a name.")
+            raise ValueError(_("The user does not have a name."))
         if not email:
-            raise ValueError("No email specified.")
+            raise ValueError(_("No email specified."))
 
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
@@ -58,10 +61,10 @@ class UserManager(BaseAuthManager):
         extra_fields.setdefault('is_active', True)
 
         if extra_fields.get('is_staff') is not True:
-            raise ValueError('The superuser must have is_staff=True.')
+            raise ValueError(_('The superuser must have is_staff=True.'))
 
         if extra_fields.get('is_superuser') is not True:
-            raise ValueError('The superuser must have is_superuser=True.')
+            raise ValueError(_('The superuser must have is_superuser=True.'))
 
         return self._create_user(username, email, password, **extra_fields)
 
@@ -132,16 +135,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         Role,
         related_name="users",
         on_delete=models.PROTECT)
-
     user_verified = models.BooleanField(
         blank=True,
         null=True
     )
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
 
     country = CountryField(blank=True)
+
+    card_number = CardNumberField('Card Number', blank=True, null=True)
+    card_expiry = CardExpiryField('Expiration Date', blank=True, null=True)
+    card_code = SecurityCodeField('CVV/CVC', blank=True, null=True)
 
     objects = UserManager()
 

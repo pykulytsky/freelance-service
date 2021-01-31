@@ -17,15 +17,13 @@ class JobListAPI(generics.ListCreateAPIView):
 
     def create(self, request):
         data = request.data.copy()
-        data.update({
-            'author': request.user
-        })
 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
+            data = {k: data[k] for k in data if k != 'author'}
             JobCreator(
                 author=request.user,
-                **serializer.data
+                **data
             )()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)

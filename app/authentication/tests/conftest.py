@@ -8,6 +8,15 @@ from authentication.backend import JWTAuthentication
 from mixer.backend.django import mixer as _mixer
 from authentication.creator import UserCreator
 
+from PIL import Image
+
+
+@pytest.fixture
+def image():
+    img = Image.open('static/assets/assets/avatars/image.gif')
+
+    return img.filename
+
 
 @pytest.fixture
 def mixer():
@@ -42,36 +51,51 @@ def employer_role():
 
 
 @pytest.fixture
-def user(django_user_model, employer_role, mixer):
+def user(django_user_model, employer_role, mixer, image):
     return mixer.blend(
         django_user_model,
         role=employer_role,
-        is_active=True)
+        is_active=True,
+        avatar=image)
 
 
 @pytest.fixture
-def inactive_user(django_user_model, performer_role, mixer):
+def inactive_user(django_user_model, performer_role, mixer, image):
     return mixer.blend(
         django_user_model,
         role=performer_role,
+        avatar=image
     )
 
 
 @pytest.fixture
-def active_user(django_user_model, performer_role, mixer):
-    return mixer.blend(
-        django_user_model,
-        role=performer_role,
-        is_active=True)
+def inactive_api(inactive_user):
+    client = APIClient()
+
+    token = inactive_user.token
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
+
+    return client
 
 
 @pytest.fixture
-def superuser(django_user_model, performer_role, mixer):
+def active_user(django_user_model, performer_role, mixer, image):
+    return mixer.blend(
+        django_user_model,
+        role=performer_role,
+        is_active=True,
+        avatar=image
+    )
+
+
+@pytest.fixture
+def superuser(django_user_model, performer_role, mixer, image):
     return mixer.blend(
         django_user_model,
         role=performer_role,
         is_superuser=True,
-        si_staff=True)
+        is_staff=True,
+        avatar=image)
 
 
 @pytest.fixture

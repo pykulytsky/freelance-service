@@ -74,7 +74,6 @@ def test_job_detail_api_get_record(api, job):
 @pytest.mark.parametrize(
     'field,data',
     [
-        ['id', 1],
         ['title', 'changed title'],
         ['description', 'changed description'],
         ['deadline', '2020-09-09'],

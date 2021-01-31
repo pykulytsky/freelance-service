@@ -7,7 +7,7 @@ from rest_framework import serializers
 
 from djmoney.money import Money
 
-from .models import Job
+from .models import Job, Proposal
 from chat.models import Room
 from .tasks import send_email_after_create_job
 
@@ -29,7 +29,8 @@ class JobCreator:
         price: Money,
         is_price_fixed: bool,
         deadline: Union[date, str],
-        plan: Optional[int] = None
+        plan: Optional[int] = None,
+        **kwargs
     ) -> None:
         self.data = {
             'title': title,
@@ -38,7 +39,8 @@ class JobCreator:
             'price': price,
             'is_price_fixed': is_price_fixed,
             'deadline': deadline,
-            'plan': plan
+            'plan': plan,
+            **kwargs
         }
         if isinstance(deadline, str):
             self.data.update({
@@ -50,14 +52,14 @@ class JobCreator:
         if not author.is_active:
             raise UserNotActive("User must be active to create job")
 
-    def __call__(self):
+    def __call__(self) -> Job:
         self.room = self.create_room()
         self.job = self.create()
         self.notify_creator()
 
         return self.job
 
-    def create_room(self):
+    def create_room(self) -> Room:
         room = Room.objects.update_or_create(
             name=f'{self.data["title"]}:{self.author.username}'
         )
@@ -76,7 +78,7 @@ class JobCreator:
         else:
             raise ValidationError(serializer.errors)
 
-    def notify_creator(self):
+    def notify_creator(self) -> Union[int, None]:
         _mail = send_email_after_create_job.delay(
             self.author.email,
             datetime.now().strftime("%m/%d/%Y %H:%M"),
@@ -85,3 +87,23 @@ class JobCreator:
         )
 
         return _mail.collect()
+
+
+class ProposalCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Proposal
+        fields = '__all__'
+
+
+class ProposalCreator:
+    def __init__(self) -> None:
+        pass
+
+    def __call__(self) -> Proposal:
+        pass
+
+    def create(self) -> Proposal:
+        pass
+
+    def notify_creator(self) -> Union[int, None]:
+        pass

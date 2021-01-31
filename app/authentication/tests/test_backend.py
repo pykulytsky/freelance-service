@@ -9,9 +9,9 @@ from rest_framework import exceptions
 pytestmark = [pytest.mark.django_db]
 
 
-def test_backend_access_inactive_user_exception(api, backend, inactive_user):
+def test_backend_access_inactive_user_exception(inactive_api, backend, inactive_user):
     url = reverse('login')
-    response = api.post(
+    response = inactive_api.post(
         url,
         {
             'username': inactive_user.username,
@@ -25,9 +25,9 @@ def test_backend_access_inactive_user_exception(api, backend, inactive_user):
         backend.authenticate(request)
 
 
-def test_backend_access_inactive_user(api, inactive_user):
+def test_backend_access_inactive_user(inactive_api, inactive_user):
     url = reverse('login')
-    response = api.post(
+    response = inactive_api.post(
         url,
         {
             'username': inactive_user.username,
@@ -38,22 +38,9 @@ def test_backend_access_inactive_user(api, inactive_user):
     assert response.status_code == 403
 
 
-def test_backend_access_active_user(api, active_user):
+def test_backend_access_inactive_user_with_employer_role(inactive_api, backend, user):
     url = reverse('login')
-    response = api.post(
-        url,
-        {
-            'username': active_user.username,
-            'password': active_user.password,
-            'email': active_user.email
-        })
-
-    assert response.status_code == 403
-
-
-def test_backend_access_inactive_user_with_employer_role(api, backend, user):
-    url = reverse('login')
-    response = api.post(
+    response = inactive_api.post(
         url,
         {
             'username': user.username,
@@ -67,9 +54,9 @@ def test_backend_access_inactive_user_with_employer_role(api, backend, user):
         backend.authenticate(request)
 
 
-def test_backend_with_wrong_auth_credentials(api, backend):
+def test_backend_with_wrong_auth_credentials(inactive_api, backend):
     url = reverse('login')
-    response = api.post(
+    response = inactive_api.post(
         url,
         {
             'username': 'WRONG USER',
@@ -83,9 +70,9 @@ def test_backend_with_wrong_auth_credentials(api, backend):
         backend.authenticate(request)
 
 
-def test_backend_access_active_user_exception_on_protected_endpoint(api, backend):
+def test_backend_access_active_user_exception_on_protected_endpoint(inactive_api, backend):
     url = reverse('test')
-    response = api.get(url)
+    response = inactive_api.get(url)
 
     request = response.wsgi_request
 
