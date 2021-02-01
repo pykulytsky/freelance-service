@@ -72,3 +72,11 @@ class FavoriteJobsListAPI(APIView):
             serializer.data,
             status=status.HTTP_200_OK
         )
+
+
+class ProposeDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    pass
+
+
+class ProposeListCreateAPI(generics.ListCreateAPIView):
+    pass

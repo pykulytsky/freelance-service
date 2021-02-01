@@ -55,7 +55,9 @@ class JobCreator:
     def __call__(self) -> Job:
         self.room = self.create_room()
         self.job = self.create()
-        self.notify_creator()
+
+        if self.job is not None:
+            self.notify_creator()
 
         return self.job
 
@@ -96,14 +98,49 @@ class ProposalCreateSerializer(serializers.ModelSerializer):
 
 
 class ProposalCreator:
-    def __init__(self) -> None:
-        pass
+    def __init__(
+        self,
+        job: Job,
+        performer: User,
+        description: str,
+        price: Union[Money, str],
+        deadline: date
+    ) -> None:
+        if isinstance(job, Job):
+            for proposal in job.proposals.all():
+                if proposal.performer == performer:
+                    raise ValueError("1 performer can send only 1 proposal to 1 job")
+        else:
+            raise ValueError("Job is required.")
+
+        self.data = {
+            'job': job.id,
+            'performer': performer.id,
+            'description': description,
+            'price': price,
+            'deadline': deadline
+        }
 
     def __call__(self) -> Proposal:
-        pass
+        self.propose = self.create()
+
+        if self.propose is not None:
+            self.notify_creator()
+            self.notify_performer()
+
+        return self.propose
 
     def create(self) -> Proposal:
-        pass
+        serializer = ProposalCreateSerializer(data=self.data)
+        if serializer.is_valid():
+            serializer.save()
+
+            return serializer.instance
+        else:
+            raise ValidationError(f"Can`t create propose, data not valid - [{serializer.errors}]")
 
     def notify_creator(self) -> Union[int, None]:
+        pass
+
+    def notify_performer(self) -> Union[int, None]:
         pass

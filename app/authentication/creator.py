@@ -13,6 +13,8 @@ from django.conf import settings
 
 from jobs.models import FavoritesJobs
 
+from authentication.mailchimp.client import AppMailchimp
+
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -145,7 +147,11 @@ class UserCreator:
         return _mail.collect()
 
     def subscribe(self):
-        pass
+        if not settings.DEBUG:
+            client = AppMailchimp()
+            audience_id = settings.MAILCHIMP_AUDIENCE_ID
+
+            client.subscribe_django_user(audience_id, self.get_user())
 
     def create_favorite_jobs_list(self) -> FavoritesJobs:
         return FavoritesJobs.objects.update_or_create(user=self.get_user())
