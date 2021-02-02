@@ -103,3 +103,8 @@ def favorite_list(superuser):
 @pytest.fixture
 def proposal_creator():
     return ProposalCreator
+
+
+@pytest.fixture
+def proposal(superuser, mixer, job):
+    return mixer.blend('jobs.Proposal', performer=superuser, job=job)

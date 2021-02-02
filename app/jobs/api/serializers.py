@@ -1,4 +1,5 @@
-from jobs.models import FavoritesJobs, Job
+from jobs.models import FavoritesJobs, Job, Proposal
+
 from authentication.api.serializers import UserPublicSerializer
 from djmoney.contrib.django_rest_framework import MoneyField
 
@@ -42,4 +43,20 @@ class JobDetailSerializer(serializers.ModelSerializer):
 class FavoriteJobsSerializer(serializers.ModelSerializer):
     class Meta:
         model = FavoritesJobs
+        fields = '__all__'
+
+
+class ProposalCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Proposal
+        fields = '__all__'
+
+
+class ProposalListSerializer(serializers.ModelSerializer):
+    performer = UserPublicSerializer()
+    job = JobListSerializer()
+
+    class Meta:
+        model = Proposal
         fields = '__all__'

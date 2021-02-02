@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from jobs.models import *
 from .serializers import *
 
-from jobs.creator import JobCreator
+from jobs.creator import JobCreator, ProposalCreator
 
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
@@ -74,9 +74,33 @@ class FavoriteJobsListAPI(APIView):
         )
 
 
-class ProposeDetailAPI(generics.RetrieveUpdateDestroyAPIView):
-    pass
+class ProposalDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ProposalListSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        return Proposal.objects.filter(performer=self.request.user)
 
 
-class ProposeListCreateAPI(generics.ListCreateAPIView):
-    pass
+class ProposalListCreateAPI(generics.ListCreateAPIView):
+    serializer_class = ProposalListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Proposal.objects.filter(performer=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = ProposalCreateSerializer(data=request.data)
+
+        if serializer.is_valid():
+            print(f'{serializer.data}')
+            ProposalCreator(
+                performer=request.user,
+                job=Job.objects.get(id=serializer.data['job']),
+                **{k: serializer.data[k] for k in serializer.data if k != 'performer' and k != 'job'}
+            )()
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

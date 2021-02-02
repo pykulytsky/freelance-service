@@ -104,7 +104,8 @@ class ProposalCreator:
         performer: User,
         description: str,
         price: Union[Money, str],
-        deadline: date
+        deadline: date,
+        **kwargs
     ) -> None:
         if isinstance(job, Job):
             for proposal in job.proposals.all():
