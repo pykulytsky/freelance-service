@@ -41,7 +41,7 @@ class MailchimpHTTP:
         )
 
         if response.status_code == 404:
-            raise MailChimpNotFound()
+            raise MailChimpNotFound(f'{response.status_code}: {self.get_json(response)}')
 
         if response.status_code != expected_status_code:
             raise MailChimpWrongResponse(f'{response.status_code}: {self.get_json(response)}')
@@ -53,6 +53,9 @@ class MailchimpHTTP:
 
     def post(self, url: str, payload: dict, *args, **kwargs):
         return self.request(url, method='POST', payload=payload, *args, **kwargs)
+
+    def delete(self, url: str, *args, **kwargs):
+        return self.request(url, method='DELETE', expected_status_code=204, *args, **kwargs)
 
     @staticmethod
     def get_json(response):

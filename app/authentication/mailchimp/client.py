@@ -40,6 +40,20 @@ class AppMailchimp:
             },
         )
 
+    def delete_list_member(self, list_id: str, user: User, tags: Optional[Iterable] = None):
+        member = MailchimpMember.from_django_user(user)
+
+        if tags is not None:
+            self.set_tags(
+                list_id=list_id,
+                member=member,
+                tags=tags,
+            )
+
+        return self.http.delete(
+            url=f'lists/{list_id}/members/{member.subscriber_hash}',
+        )
+
     def set_tags(self, list_id: str, member: MailchimpMember, tags: Iterable[str]):
         self.http.post(
             url=f'/lists/{list_id}/members/{member.subscriber_hash}/tags',

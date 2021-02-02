@@ -1,3 +1,4 @@
+from typing import Dict, Tuple
 from django.db import models
 from django.conf import settings
 from django.core import validators
@@ -67,6 +68,14 @@ class UserManager(BaseAuthManager):
             raise ValueError(_('The superuser must have is_superuser=True.'))
 
         return self._create_user(username, email, password, **extra_fields)
+
+    def delete(self) -> Tuple[int, Dict[str, int]]:
+        from .mailchimp.client import AppMailchimp
+
+        client = AppMailchimp()
+        client.delete_list_member(settings.MAILCHIMP_AUDIENCE_ID, self.model)
+
+        return super().delete()
 
 
 class Role(models.Model):
