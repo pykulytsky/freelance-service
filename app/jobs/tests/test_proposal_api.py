@@ -39,3 +39,21 @@ def test_create_api_success(api, active_user, job):
     )
 
     assert response.status_code == 201
+
+
+def test_get_api_success(api, proposal):
+    url = reverse('proposals-detail', kwargs={'id': proposal.id})
+
+    response = api.get(url)
+
+    assert response.status_code == 200
+
+
+def test_get_api_data(api, proposal, job):
+    url = reverse('proposals-detail', kwargs={'id': proposal.id})
+
+    response = api.get(url)
+
+    assert response.data['description'] == proposal.description
+    assert response.data['performer']['username'] == proposal.performer.username
+    assert response.data['job']['id'] == job.id

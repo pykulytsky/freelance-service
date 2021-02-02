@@ -111,6 +111,9 @@ class ProposalCreator:
             for proposal in job.proposals.all():
                 if proposal.performer == performer:
                     raise ValueError("1 performer can send only 1 proposal to 1 job")
+            
+            if job.author == performer:
+                raise ValueError("Futhor of the job cannot create a proposal for this job")
         else:
             raise ValueError("Job is required.")
 
