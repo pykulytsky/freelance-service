@@ -40,10 +40,10 @@ def api(superuser):
 
 
 @pytest.fixture
-def superuser(django_user_model, performer_role, mixer, image):
+def superuser(django_user_model, employer_role, mixer, image):
     return mixer.blend(
         django_user_model,
-        role=performer_role,
+        role=employer_role,
         is_superuser=True,
         si_staff=True,
         is_active=True,

@@ -23,13 +23,12 @@ def test_list_api_data(api, proposal, superuser, job):
     assert response.data[0]['job']['description'] == job.description
 
 
-def test_create_api_success(api, active_user, job):
+def test_create_api_success(active_api, job):
     url = reverse('proposals-list')
 
-    response = api.post(
+    response = active_api.post(
         url,
         {
-            'performer': active_user.id,
             'description': 'test',
             'price': 100500,
             'price_currency': 'USD',

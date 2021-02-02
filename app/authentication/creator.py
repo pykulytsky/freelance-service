@@ -82,7 +82,6 @@ class UserCreator:
                     user.email_verification_code,
                     self.verification_url
                 )
-                self.subscribe()
             else:
                 raise EmailNotValid("Your email is not valid.")
         else:
@@ -90,7 +89,8 @@ class UserCreator:
                 user.email_verification_code,
                 self.verification_url
             )
-            self.subscribe()
+
+        self.subscribe()
 
         self.create_favorite_jobs_list()
         return user

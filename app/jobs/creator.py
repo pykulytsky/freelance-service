@@ -11,7 +11,7 @@ from .models import Job, Proposal
 from chat.models import Room
 from .tasks import send_email_after_create_job
 
-from authentication.exceptions import UserNotActive
+from authentication.exceptions import UserNotActive, UserRoleError
 
 
 class JobCreateSerializer(serializers.ModelSerializer):
@@ -32,6 +32,10 @@ class JobCreator:
         plan: Optional[int] = None,
         **kwargs
     ) -> None:
+        if isinstance(author, User):
+            if author.role.id != 2:
+                raise UserRoleError("Only employer can create jobs.")
+
         self.data = {
             'title': title,
             'description': description,
@@ -107,13 +111,17 @@ class ProposalCreator:
         deadline: date,
         **kwargs
     ) -> None:
+        if isinstance(performer, User):
+            if performer.role.id != 1:
+                raise UserRoleError("Only performer can send proposes.")
+
         if isinstance(job, Job):
             for proposal in job.proposals.all():
                 if proposal.performer == performer:
                     raise ValueError("1 performer can send only 1 proposal to 1 job")
-            
+
             if job.author == performer:
-                raise ValueError("Futhor of the job cannot create a proposal for this job")
+                raise ValueError("Author of the job cannot create a proposal for this job")
         else:
             raise ValueError("Job is required.")
 

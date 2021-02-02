@@ -28,12 +28,22 @@ class JobListSerializer(serializers.ModelSerializer):
         )
 
 
+class ProposalListSerializer(serializers.ModelSerializer):
+    performer = UserPublicSerializer()
+    job = JobListSerializer()
+
+    class Meta:
+        model = Proposal
+        fields = '__all__'
+
+
 class JobDetailSerializer(serializers.ModelSerializer):
     price = MoneyField(
         max_digits=14,
         decimal_places=2,
     )
     author = UserPublicSerializer(read_only=True)
+    proposals = ProposalListSerializer(many=True)
 
     class Meta:
         model = Job
@@ -50,13 +60,4 @@ class ProposalCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Proposal
-        fields = '__all__'
-
-
-class ProposalListSerializer(serializers.ModelSerializer):
-    performer = UserPublicSerializer()
-    job = JobListSerializer()
-
-    class Meta:
-        model = Proposal
-        fields = '__all__'
+        exclude = ['performer']
