@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from .models import Role, User
-from .tasks import send_verification_mail
+from .tasks import send_verification_mail, send_verification_email_by_sendgrid
 from .exceptions import *
 
 from .mailboxlayer import validate_email
@@ -138,13 +138,11 @@ class UserCreator:
         verification_link: str
     ) -> Union[int, None]:
 
-        _mail = send_verification_mail.delay(
+        send_verification_email_by_sendgrid.delay(
             self.data['email'],
-            verification_link,
-            verification_code
+            verification_link + str(verification_code),
+            self.user.first_name
         )
-
-        return _mail.collect()
 
     def subscribe(self):
         if not settings.DEBUG:

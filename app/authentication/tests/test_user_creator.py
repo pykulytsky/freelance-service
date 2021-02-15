@@ -176,27 +176,6 @@ def test_creator_emit_subscribe_method(mocker, creator, performer_role):
     assert isinstance(user, User)
 
 
-def test_creator_send_email(creator, performer_role):
-    user_creator = creator(
-        username='test',
-        email='pykulytsky1@gmail.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
-    )
-
-    user = user_creator.create()
-
-    mail = user_creator.verify_email(
-        user.email_verification_code,
-        'http://localhost:8080/verify/'
-    )
-
-    for result in mail:
-        assert 1 == result[1]
-
-
 def test_user_creator_not_enought_fields(creator, performer_role):
     with pytest.raises(TypeError):
         creator(

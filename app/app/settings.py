@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+from django import conf
 from sentry_sdk.integrations.django import DjangoIntegration
 import sentry_sdk
 from pathlib import Path
@@ -220,3 +221,6 @@ FIXER_ACCESS_KEY = config('FIXER_ACCESS_KEY')
 
 MAILCHIMP_API_KEY = config('MAILCHIMP_API_KEY')
 MAILCHIMP_AUDIENCE_ID = config('MAILCHIMP_AUDIENCE_ID')
+
+SENDGRID_API_KEY = config('SENDGRID_API_KEY')
+SENDGRID_VERIFY_EMAIL_TEMPLATE_ID = config('SENDGRID_VERIFY_EMAIL_TEMPLATE_ID')

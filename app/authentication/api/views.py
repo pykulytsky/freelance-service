@@ -43,7 +43,12 @@ class RegisterAPI(APIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            new_user = UserCreator(**serializer.data)()
+            try:
+                new_user = UserCreator(**serializer.data)()
+            except TypeError as e:
+                return Response({
+                    'error': str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)
 
             return Response(
                 {'token': new_user.token},

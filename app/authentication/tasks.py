@@ -4,6 +4,10 @@ from django.core.mail import get_connection, EmailMessage
 
 from django.conf import settings
 
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
 
 @app.task
 def send_verification_mail_test(mail: EmailMessage):
@@ -44,3 +48,26 @@ def send_verification_mail(
     _email = msg.send()
 
     return _email
+
+
+@app.task
+def send_verification_email_by_sendgrid(
+    receiver_email: str,
+    verification_link: str,
+    receiver_first_name: str
+):
+    message = Mail(
+    from_email=settings.EMAIL_HOST_USER,
+    to_emails=receiver_email,
+    subject='Please verify your link',
+    )
+    message.dynamic_tamplate_data = {
+        'verification_link': verification_link,
+        'first_name': receiver_first_name
+    }
+    message.template_id = settings.SENDGRID_VERIFY_EMAIL_TEMPLATE_ID
+
+    sendgrid_client = SendGridAPIClient(settings.SENDGRID_API_KEY)
+    response = sendgrid_client.send(message)
+
+    return response.status_code
