@@ -1,12 +1,12 @@
+from authentication.models import User
 from django.template.loader import get_template
 from app.celery import app
 from django.core.mail import get_connection, EmailMessage
 
 from django.conf import settings
 
-import os
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.client import SendgridAPIClient
+from sendgrid.mail import Receiver
 
 
 @app.task
@@ -52,22 +52,18 @@ def send_verification_mail(
 
 @app.task
 def send_verification_email_by_sendgrid(
-    receiver_email: str,
-    verification_link: str,
-    receiver_first_name: str
+    user: User
 ):
-    message = Mail(
-    from_email=settings.EMAIL_HOST_USER,
-    to_emails=receiver_email,
-    subject='Please verify your link',
-    )
-    message.dynamic_tamplate_data = {
-        'verification_link': verification_link,
-        'first_name': receiver_first_name
-    }
-    message.template_id = settings.SENDGRID_VERIFY_EMAIL_TEMPLATE_ID
+    receiver = Receiver.from_user_model(user)
+    data = receiver.to_json()
 
-    sendgrid_client = SendGridAPIClient(settings.SENDGRID_API_KEY)
-    response = sendgrid_client.send(message)
+    client = SendgridAPIClient()
+    response = client.send_verification_mail(
+        receiver_email=data['email'],
+        dynamic_template_data={
+            'first_name': data['first_name'],
+            'verification_link': data['first_name']
+        }
+    )
 
     return response.status_code

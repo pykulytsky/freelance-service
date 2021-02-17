@@ -6,7 +6,7 @@ from typing import Optional
 
 
 class BearerAuth(requests.auth.AuthBase):
-
+    """Base Bearer authentication"""
     def __init__(self, token):
         self.token = token
 
@@ -24,6 +24,7 @@ class SendgridWrongRequest(BaseException):
 
 
 class SendgridHTTP():
+    """Class-wrapper over requests, for easy operation on Sendgrid."""
 
     def __init__(self, api_key: Optional[str] = settings.SENDGRID_API_KEY) -> None:
         self.api_key = api_key
@@ -48,15 +49,12 @@ class SendgridHTTP():
             **requests_payload
         )
 
-        if response.status_code == 403:
+        if response.status_code in [401, 403]:
             raise SendgridAuthenticationFailed(f"[{response.status_code}]Wrong api key was provided: [{str(response.json())}]")
 
-        if response.status_code in [400, 401] and response.json()['errors'][0]['message'] == 'The provided authorization grant is invalid, expired, or revoked':
-            raise SendgridAuthenticationFailed(f"[{response.status_code}]Wrong api key was provided: [{str(response.json())}]")
-
-        if response.status_code in [400, 401]:
+        if response.status_code == 400:
             raise SendgridWrongRequest(f"[{response.status_code}] Error in request body: [{str(response.json())}]")
-        
+
         return self.get_json(response=response)
 
     def get(self, url: str, data: dict):

@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from .models import Role, User
-from .tasks import send_verification_mail, send_verification_email_by_sendgrid
+from .tasks import send_verification_email_by_sendgrid
 from .exceptions import *
 
 from .mailboxlayer import validate_email
@@ -78,17 +78,11 @@ class UserCreator:
 
         if settings.DEBUG is False:
             if validate_email(self.data['email']):
-                self.verify_email(
-                    user.email_verification_code,
-                    self.verification_url
-                )
+                self.verify_email()
             else:
                 raise EmailNotValid("Your email is not valid.")
         else:
-            self.verify_email(
-                user.email_verification_code,
-                self.verification_url
-            )
+            self.verify_email()
 
         self.subscribe()
 
@@ -134,14 +128,10 @@ class UserCreator:
 
     def verify_email(
         self,
-        verification_code: uuid,
-        verification_link: str
     ) -> Union[int, None]:
 
         send_verification_email_by_sendgrid.delay(
-            self.data['email'],
-            verification_link + str(verification_code),
-            self.user.first_name
+            self
         )
 
     def subscribe(self):
