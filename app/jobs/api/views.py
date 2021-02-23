@@ -104,3 +104,25 @@ class ProposalListCreateAPI(generics.ListCreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class JobsByUserPerformListAPI(APIView):
+    permission_classes = (IsAuthenticated)
+
+    def get(self, user_id):
+        _user = User.objects.get(user_id)
+        jobs = Job.objects.filter(performer=_user)
+
+        serializer = JobListSerializer(jobs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class JobsByUserPerformDetailAPI(APIView):
+    permission_classes = (IsAuthenticated)
+
+    def get(self, user_id, job_id):
+        _user = User.objects.get(user_id)
+        jobs = Job.objects.filter(performer=_user, id=job_id)
+
+        serializer = JobListSerializer(jobs)
+        return Response(serializer.data, status=status.HTTP_200_OK)

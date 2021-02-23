@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 DJANGO_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -202,7 +203,7 @@ EMAIL_HOST_USER_NAME = config('EMAIL_HOST_USER_NAME')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 
-STATIC_ROOT = '/static/'
+STATIC_ROOT = str(BASE_DIR) + '/static/'
 
 EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 

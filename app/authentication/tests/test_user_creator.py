@@ -2,6 +2,8 @@ from authentication.exceptions import EmailNotValid, UserRoleError
 from authentication.models import User
 import pytest
 
+from authentication.tasks import send_verification_email_by_sendgrid
+
 pytestmark = [pytest.mark.django_db]
 
 
@@ -97,13 +99,15 @@ def test_creator_verify_email_is_called_with_parametres(mocker, creator, perform
         last_name="pykulytsky",
         role=performer_role.id
     )
-    mocker.patch('authentication.creator.UserCreator.verify_email')
+    mocker.patch('authentication.tasks.send_verification_email_by_sendgrid.delay')
 
     user = user_creator()
 
-    user_creator.verify_email.assert_called_once_with(
-        user.email_verification_code,
-        'http://localhost:8080/verify/'
+    send_verification_email_by_sendgrid.delay.assert_called_once_with(
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        verification_code=user.email_verification_code
     )
     assert isinstance(user, User)
 

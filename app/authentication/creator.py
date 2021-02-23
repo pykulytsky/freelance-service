@@ -1,4 +1,3 @@
-import uuid
 from typing import Optional, Union
 
 from rest_framework import serializers
@@ -46,6 +45,7 @@ class UserCreateDetailSerializer(serializers.ModelSerializer):
 
 
 class UserCreator:
+    """Service object for create user."""
     def __init__(
         self,
         username: str,
@@ -54,6 +54,7 @@ class UserCreator:
         first_name: str,
         last_name: str,
         role: int,
+        confirm_subscribe: bool = False,
         **kwargs
     ) -> None:
 
@@ -66,6 +67,7 @@ class UserCreator:
             'role': role,
             **kwargs
         }
+        self.confirm_subscribe = confirm_subscribe
 
         self.verification_url = 'http://localhost:8080/verify/'
         self.extra_fields = True if len(kwargs) > 0 else False
@@ -85,8 +87,8 @@ class UserCreator:
             self.verify_email()
 
         self.subscribe()
-
         self.create_favorite_jobs_list()
+
         return user
 
     def create(self) -> Union[User, None]:
@@ -131,11 +133,14 @@ class UserCreator:
     ) -> Union[int, None]:
 
         send_verification_email_by_sendgrid.delay(
-            self
+            first_name=self.get_user().first_name,
+            last_name=self.get_user().last_name,
+            email=self.get_user().email,
+            verification_code=self.get_user().email_verification_code
         )
 
     def subscribe(self):
-        if not settings.DEBUG:
+        if not settings.DEBUG and self.subscribe:
             client = AppMailchimp()
             audience_id = settings.MAILCHIMP_AUDIENCE_ID
 

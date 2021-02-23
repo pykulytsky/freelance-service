@@ -1,4 +1,4 @@
-from authentication.models import User
+from uuid import UUID
 from django.template.loader import get_template
 from app.celery import app
 from django.core.mail import get_connection, EmailMessage
@@ -52,18 +52,27 @@ def send_verification_mail(
 
 @app.task
 def send_verification_email_by_sendgrid(
-    user: User
+    first_name: str,
+    last_name: str,
+    email: str,
+    verification_code: UUID,
 ):
-    receiver = Receiver.from_user_model(user)
-    data = receiver.to_json()
+    if not settings.DEBUG:
+        receiver = Receiver(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            verification_code=verification_code
+        )
+        data = receiver.to_json()
 
-    client = SendgridAPIClient()
-    response = client.send_verification_mail(
-        receiver_email=data['email'],
-        dynamic_template_data={
-            'first_name': data['first_name'],
-            'verification_link': data['first_name']
-        }
-    )
+        client = SendgridAPIClient()
+        response = client.send_verification_mail(
+            receiver_email=data['email'],
+            dynamic_template_data={
+                'first_name': data['first_name'],
+                'verification_link': data['first_name']
+            }
+        )
 
-    return response.status_code
+        return response.status_code
