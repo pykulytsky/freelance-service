@@ -37,7 +37,7 @@ django-rest-auth==0.9.5
 django-silk==4.1.0
 django-versatileimagefield==2.0
 djangorestframework==3.12.2
-drf-flex-fields==0.8.8
+drf-flex-fields==0.8.9
 drf-yasg==1.20.0
 Faker==5.8.0
 flake8==3.8.4
