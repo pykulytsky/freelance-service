@@ -7,27 +7,29 @@ from authentication.tasks import send_verification_email_by_sendgrid
 pytestmark = [pytest.mark.django_db]
 
 
-def test_creator_initialization(creator, performer_role):
+@pytest.fixture
+def user_data(performer_role):
+    return {
+        'username': 'test',
+        'email': 'test@py.com',
+        'password': '1234',
+        'first_name': 'oleh',
+        'last_name': "pykulytsky",
+        'role': performer_role.id
+    }
+
+
+def test_creator_initialization(creator, user_data):
     user_creator = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )
 
     assert user_creator.data['username'] == 'test'
 
 
-def test_creator_create_user_with_role_with_create_method(creator, performer_role):
+def test_creator_create_user_with_role_with_create_method(creator, user_data):
     user_creator = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )
 
     user = user_creator.create()
@@ -35,36 +37,21 @@ def test_creator_create_user_with_role_with_create_method(creator, performer_rol
     assert isinstance(user, User)
 
 
-def test_creator_create_user_with_role(creator, performer_role):
+def test_creator_create_user_with_role(creator, user_data):
     user = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )()
 
     assert isinstance(user, User)
 
 
-def test_creator_create_user_with_role_with_already_used_credentials(creator, performer_role):
+def test_creator_create_user_with_role_with_already_used_credentials(creator, user_data):
     user = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )()
 
     another_user = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )()
 
     assert isinstance(user, User)
@@ -73,14 +60,9 @@ def test_creator_create_user_with_role_with_already_used_credentials(creator, pe
     assert user == another_user
 
 
-def test_creator_verify_email_is_called(mocker, creator, performer_role):
+def test_creator_verify_email_is_called(mocker, creator, user_data):
     user_creator = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )
     mocker.patch('authentication.creator.UserCreator.verify_email')
 
@@ -90,14 +72,9 @@ def test_creator_verify_email_is_called(mocker, creator, performer_role):
     assert isinstance(user, User)
 
 
-def test_creator_verify_email_is_called_with_parametres(mocker, creator, performer_role):
+def test_creator_verify_email_is_called_with_parametres(mocker, creator, user_data):
     user_creator = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )
     mocker.patch('authentication.tasks.send_verification_email_by_sendgrid.delay')
 
@@ -113,14 +90,9 @@ def test_creator_verify_email_is_called_with_parametres(mocker, creator, perform
 
 
 @pytest.mark.xfail(strict=True)
-def test_creator_emit_common_create_method(mocker, creator, performer_role):
+def test_creator_emit_common_create_method(mocker, creator, user_data):
     user_creator = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )
     mocker.patch('authentication.creator.UserCreator.create')
 
@@ -130,14 +102,9 @@ def test_creator_emit_common_create_method(mocker, creator, performer_role):
 
 
 @pytest.mark.xfail(strict=True)
-def test_creator_emit_correct_create_method(mocker, creator, performer_role):
+def test_creator_emit_correct_create_method(mocker, creator, user_data):
     user_creator = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )
     mocker.patch('authentication.creator.UserCreator.create_performer')
 
@@ -146,14 +113,9 @@ def test_creator_emit_correct_create_method(mocker, creator, performer_role):
     user_creator.create_performer.assert_called_once()
 
 
-def test_creator_not_emit_wrong_create_method(mocker, creator, performer_role):
+def test_creator_not_emit_wrong_create_method(mocker, creator, user_data):
     user_creator = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )
     mocker.patch('authentication.creator.UserCreator.create_employer')
 
@@ -163,14 +125,9 @@ def test_creator_not_emit_wrong_create_method(mocker, creator, performer_role):
     assert isinstance(user, User)
 
 
-def test_creator_emit_subscribe_method(mocker, creator, performer_role):
+def test_creator_emit_subscribe_method(mocker, creator, user_data):
     user_creator = creator(
-        username='test',
-        email='test@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id
+        **user_data
     )
     mocker.patch('authentication.creator.UserCreator.subscribe')
 
@@ -204,14 +161,9 @@ def test_user_creator_wrong_role(creator):
     assert "No role with such id" in str(role_error.value)
 
 
-def test_user_creator(creator, performer_role):
+def test_user_creator(creator, user_data):
     user_creator = creator(
-        username='test2',
-        email='test2@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id,
+        **user_data,
         rating=10
     )
     user = user_creator()
@@ -223,14 +175,9 @@ def test_superuser_always_active(superuser):
     assert superuser.is_active
 
 
-def test_user_creator_create_user(creator, performer_role):
+def test_user_creator_create_user(creator, user_data):
     creator(
-        username='test2',
-        email='test2@py.com',
-        password='1234',
-        first_name='oleh',
-        last_name="pykulytsky",
-        role=performer_role.id,
+        **user_data,
         rating=10
     )()
 
@@ -238,15 +185,10 @@ def test_user_creator_create_user(creator, performer_role):
 
 
 @pytest.mark.skip
-def test_user_creator_validate_email_address(creator, performer_role, settings):
+def test_user_creator_validate_email_address(creator, user_data, settings):
     settings.DEBUG = False
     with pytest.raises(EmailNotValid):
         creator(
-            username='test2',
-            email='test2@py.com',
-            password='1234',
-            first_name='oleh',
-            last_name="pykulytsky",
-            role=performer_role.id,
+            **user_data,
             rating=10
         )()
