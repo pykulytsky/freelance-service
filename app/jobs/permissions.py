@@ -4,7 +4,7 @@ from .models import Job
 
 class JobOwnerPermission(BasePermission):
     """
-    Check if current user is owner of job
+    Check if current user is owner of referensed job.
     """
 
     def has_permission(self, request, view):
@@ -14,4 +14,4 @@ class JobOwnerPermission(BasePermission):
         if _job.author == request.user:
             return True
 
-        raise PermissionError("You have no permissions to manage this list")
+        raise PermissionError("You have no permissions to manage this job")

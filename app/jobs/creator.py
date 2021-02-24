@@ -21,6 +21,7 @@ class JobCreateSerializer(serializers.ModelSerializer):
 
 
 class JobCreator:
+    """Service object for create job."""
     def __init__(
         self,
         author: User,
@@ -102,6 +103,7 @@ class ProposalCreateSerializer(serializers.ModelSerializer):
 
 
 class ProposalCreator:
+    """Service object for create proposal."""
     def __init__(
         self,
         job: Job,

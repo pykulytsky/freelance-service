@@ -7,4 +7,5 @@ class UserRoleError(Exception):
 
 
 class UserNotActive(Exception):
+    """Each user must activate his account using `activate` endpoint"""
     pass

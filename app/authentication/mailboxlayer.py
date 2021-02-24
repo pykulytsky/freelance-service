@@ -5,6 +5,7 @@ from .hunter import validate_email as hunter
 
 
 def validate_email(email: str) -> bool:
+    """Check if user email exists using third party service."""
     request = requests.get(f'http://apilayer.net/api/check?access_key={settings.MAILBOXLAYER_API_KEY}&email={email}')
     data = request.json()
 

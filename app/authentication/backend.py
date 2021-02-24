@@ -7,6 +7,8 @@ from authentication.models import User
 
 
 class JWTAuthentication(authentication.BaseAuthentication):
+    """The class implements a backend for authorization using a JWT token with Bearer schema. Also user must be active to pass authorization."""
+
     _AUTHENTICATION_HEADER_PREFIX = 'Bearer'
 
     def authenticate(self, request) -> tuple:

@@ -1,9 +1,17 @@
+from PIL import Image
 import pytest
 import requests_mock # noqa
 
 from authentication.mailchimp import AppMailchimp, MailchimpMember
 
 pytestmark = [pytest.mark.django_db]
+
+
+@pytest.fixture
+def image():
+    img = Image.open('static/assets/assets/avatars/image.gif')
+
+    return img.filename
 
 
 @pytest.fixture(autouse=True)
@@ -32,5 +40,5 @@ def post(mocker):
 
 
 @pytest.fixture
-def user(mixer, performer_role):
-    return mixer.blend('authentication.User', email='test@e.mail', first_name='Rulon', last_name='Oboev', role=performer_role)
+def user(mixer, performer_role, image):
+    return mixer.blend('authentication.User', email='test@e.mail', first_name='Rulon', last_name='Oboev', role=performer_role, avatar=image)

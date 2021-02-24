@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 import sentry_sdk
 from pathlib import Path
 from decouple import config
@@ -24,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%pt@&8h1p-ruw&014+!2ci%d*x!sme&evnrxaexpk+3%9v3c%d'
+SECRET_KEY = config('SECRET_KEY', '.!.')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -49,7 +50,6 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'corsheaders',
     'drf_yasg',
-    "djcelery_email",
     'djmoney',
     'djmoney.contrib.exchange',
 ]
@@ -64,15 +64,17 @@ PROJECT_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 
-sentry_sdk.init(
-    dsn="https://8c3da9eff9504514a5df251101786ddc@o504286.ingest.sentry.io/5595141",
-    integrations=[DjangoIntegration()],
-    traces_sample_rate=1.0,
+SENTRY_DSN = config('SENTRY_DSN', default='')
+if not DEBUG and len(SENTRY_DSN):
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration(), CeleryIntegration()],
+        traces_sample_rate=1.0,
 
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
-)
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
 
 SITE_ID = 1
 
