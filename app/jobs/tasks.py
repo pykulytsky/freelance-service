@@ -1,8 +1,12 @@
-from django.template.loader import get_template
+from authentication.models import User
+from sendgrid.client import SendgridAPIClient
+from sendgrid.mail import Receiver
 from app.celery import app
-from django.core.mail import EmailMessage
 from django.utils.module_loading import import_string
 from django.conf import settings
+from django.utils import timezone
+
+from .models import Job
 
 
 @app.task
@@ -15,24 +19,18 @@ def update_exchange(
 
 @app.task
 def send_email_after_create_job(
-        receiver_email,
-        date,
-        job_name,
-        deadline):
-    template = get_template('jobs/after_job_create.html')
-    context = {
-        'date': date,
-        'job_name': job_name,
-        'deadline': deadline,
-    }
-    content = template.render(context)
-    msg = EmailMessage(
-        f'You just created job {job_name}',
-        content,
-        settings.EMAIL_HOST_USER,
-        to=[receiver_email]
-    )
-    msg.content_subtype = 'html'
-    _email = msg.send()
+    user_id: int,
+    job_id: int
+):
+    if not settings.DEBUG:
+        receiver = Receiver.from_user_model(User.objects.get(id=user_id))
+        job = Job.objects.get(id=job_id)
+        data = receiver.to_json_after_create_job(job)
 
-    return _email
+        client = SendgridAPIClient()
+        response = client.send_email_after_job_create_to_creator(
+            receiver_email=receiver.email,
+            dynamic_template_data=data
+        )
+
+        return response.status_code

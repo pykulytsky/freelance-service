@@ -128,16 +128,8 @@ class UserCreator:
     def get_user(self) -> User:
         return User.objects.get_or_none(email=self.data['email'])
 
-    def verify_email(
-        self,
-    ) -> Union[int, None]:
-
-        send_verification_email_by_sendgrid.delay(
-            first_name=self.get_user().first_name,
-            last_name=self.get_user().last_name,
-            email=self.get_user().email,
-            verification_code=self.get_user().email_verification_code
-        )
+    def verify_email(self) -> Union[int, None]:
+        send_verification_email_by_sendgrid.delay(self.get_user().id)
 
     def subscribe(self):
         if not settings.DEBUG and self.subscribe:

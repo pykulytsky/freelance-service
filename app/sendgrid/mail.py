@@ -1,4 +1,6 @@
-from typing import Union
+from django.utils import timezone
+from jobs.models import Job
+from typing import Union, Optional
 from dataclasses import dataclass
 from authentication.models import User
 import uuid
@@ -41,7 +43,7 @@ class Receiver():
     first_name: str
     last_name: str
     email: str
-    verification_code: uuid
+    verification_code: Optional[uuid.UUID] = None
 
     @classmethod
     def from_user_model(cls, user: User):
@@ -52,8 +54,22 @@ class Receiver():
             verification_code=user.email_verification_code
         )
 
-    def to_json_email_verification(self):
+    def to_json_email_verification(self) -> dict:
         return {
             'first_name': self.first_name,
             'verification_link': 'http://localhost:8080/verify/' + str(self.verification_code),
+        }
+
+    def to_json(self) -> dict:
+        return {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email
+        }
+
+    def to_json_after_create_job(self, job: Job) -> dict:
+        return {
+            'first_name': self.first_name,
+            'job_title': job.title,
+            'date': timezone.now().strftime('%m/%d/%Y, %H:%M:%S')
         }

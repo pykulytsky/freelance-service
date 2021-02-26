@@ -4,6 +4,8 @@ import pytest
 
 from authentication.tasks import send_verification_email_by_sendgrid
 
+from django.conf import settings
+
 pytestmark = [pytest.mark.django_db]
 
 
@@ -80,12 +82,7 @@ def test_creator_verify_email_is_called_with_parametres(mocker, creator, user_da
 
     user = user_creator()
 
-    send_verification_email_by_sendgrid.delay.assert_called_once_with(
-        first_name=user.first_name,
-        last_name=user.last_name,
-        email=user.email,
-        verification_code=user.email_verification_code
-    )
+    send_verification_email_by_sendgrid.delay.assert_called_once_with(user.id)
     assert isinstance(user, User)
 
 
@@ -181,10 +178,10 @@ def test_user_creator_create_user(creator, user_data):
         rating=10
     )()
 
-    assert User.objects.get_or_none(email='test2@py.com') is not None
+    assert User.objects.get_or_none(email='test@py.com') is not None
 
 
-@pytest.mark.skip
+@pytest.mark.skipif(settings.DEBUG is True)
 def test_user_creator_validate_email_address(creator, user_data, settings):
     settings.DEBUG = False
     with pytest.raises(EmailNotValid):

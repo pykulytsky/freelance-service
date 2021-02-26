@@ -3,6 +3,7 @@ from authentication.models import User
 from jobs.models import Job
 import pytest
 from djmoney.money import Money
+from jobs.tasks import send_email_after_create_job
 
 from datetime import date
 
@@ -60,10 +61,10 @@ def test_job_creator_send_mail_to_creator(creator, superuser, mocker):
         deadline=date.today()
     )
 
-    mocker.patch('jobs.creator.JobCreator.notify_creator')
-    job_creator()
+    mocker.patch('jobs.tasks.send_email_after_create_job.delay')
+    job = job_creator()
 
-    job_creator.notify_creator.assert_called_once()
+    send_email_after_create_job.delay.assert_called_once_with(superuser.id, job.id)
 
 
 def test_job_creator_call_create_room_method(creator, superuser, mocker):

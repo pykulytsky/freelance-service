@@ -86,12 +86,7 @@ class JobCreator:
             raise ValidationError(serializer.errors)
 
     def notify_creator(self) -> Union[int, None]:
-        _mail = send_email_after_create_job.delay(
-            self.author.email,
-            datetime.now().strftime("%m/%d/%Y %H:%M"),
-            self.data['title'],
-            self.data['deadline'].strftime("%d/%m/%Y")
-        )
+        _mail = send_email_after_create_job.delay(self.author.id, self.job.id)
 
         return _mail.collect()
 
