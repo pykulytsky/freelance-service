@@ -181,7 +181,7 @@ def test_user_creator_create_user(creator, user_data):
     assert User.objects.get_or_none(email='test@py.com') is not None
 
 
-@pytest.mark.skipif(settings.DEBUG is True)
+@pytest.mark.skipif(settings.DEBUG is True, reason="Free account is limited for use API")
 def test_user_creator_validate_email_address(creator, user_data, settings):
     settings.DEBUG = False
     with pytest.raises(EmailNotValid):
