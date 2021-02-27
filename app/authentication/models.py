@@ -153,6 +153,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     country = CountryField(blank=True)
 
+    first_login = models.DateTimeField(verbose_name="Field updates when user login", blank=True, null=True)
+    last_login = models.DateTimeField(verbose_name="Field updates when user login", blank=True, null=True)
+
     card_number = CardNumberField('Card Number', blank=True, null=True)
     card_expiry = CardExpiryField('Expiration Date', blank=True, null=True)
     card_code = SecurityCodeField('CVV/CVC', blank=True, null=True)

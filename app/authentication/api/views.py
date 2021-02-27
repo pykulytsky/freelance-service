@@ -1,3 +1,4 @@
+from authentication.permissions import UserActionPermission
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -5,10 +6,14 @@ from rest_framework import status
 
 from .serializers import LoginSerializer
 from authentication.creator import UserCreateSerializer
-from authentication.creator import UserCreateDetailSerializer
 from authentication.creator import UserCreator
 
-from rest_framework import generics
+from authentication.models import User
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from .serializers import UserSerializer, PasswordSerializer
+
+from authentication.utils import set_login_time
 
 
 class LoginAPIView(APIView):
@@ -17,6 +22,7 @@ class LoginAPIView(APIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
+        set_login_time(self.request.user)
 
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -87,11 +93,27 @@ class DeactivateUserAPI(APIView):
             return Response({'info': 'user already deactivated'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserDetailAPI(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticated, )
-    serializer_class = UserCreateDetailSerializer
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    A viewset that provides the standard actions
+    """
+    queryset = User.objects.filter(is_active=True)
+    serializer_class = UserSerializer
+    authentication_classes = (IsAuthenticated, )
+    permission_classes = (UserActionPermission, )
 
-    def get(self, request):
-        serializer = self.serializer_class(request.user)
+    @action(detail=True, methods=['POST'])
+    def set_password(self, request, pk=None):
+        user = self.get_object()
+        serializer = PasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user.set_password(serializer.data['password'])
+            user.save()
+            return Response({'status': 'password changed'})
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    @action(methods=['POST'], detail=True)
+    def reset_password(self, request, pk=None):
+        pass
