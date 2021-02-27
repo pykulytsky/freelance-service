@@ -4,14 +4,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import LoginSerializer
+from .serializers import LoginSerializer, UserSerializer, PasswordSerializer
 from authentication.creator import UserCreateSerializer
 from authentication.creator import UserCreator
 
 from authentication.models import User
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from .serializers import UserSerializer, PasswordSerializer
 
 from authentication.utils import set_login_time
 

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .api.views import LoginAPIView, TestAPI, RegisterAPI, ActivateUserAPI, DeactivateUserAPI, UserDetailAPI
+from .api.views import LoginAPIView, TestAPI, RegisterAPI, ActivateUserAPI, DeactivateUserAPI
 
 urlpatterns = [
     path('login/', LoginAPIView.as_view(), name='login'),
@@ -8,5 +8,5 @@ urlpatterns = [
     path('test/', TestAPI.as_view(), name='test'),
     path('activate/<uuid:code>', ActivateUserAPI.as_view(), name='activate'),
     path('deactivate/', DeactivateUserAPI.as_view(), name='deactivate'),
-    path('user/', UserDetailAPI.as_view(), name='user-detail')
+    # TODO add endpoint for user password
 ]
