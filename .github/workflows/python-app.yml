@@ -20,6 +20,18 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+    
+    - name: Setup Redis
+      uses: supercharge/redis-github-action@8dd3c86cd02fabe1bc459d55ba892a9ce91e23c6
+    
+    - name: Setup PostgreSQL
+      uses: Harmon758/postgresql-action@v1.0.0
+      with: 
+        postgresql version: 12.2
+        postgresql db: 'test'
+        postgresql user: 'test_user'
+        postgresql password: '1234'
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
