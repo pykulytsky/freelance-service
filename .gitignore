@@ -12,9 +12,6 @@ env/
 
 fishenv/
 .fishenv/
-static/
-app/static/
-*/static/
 # Distribution / packaging
 .Python
 build/
