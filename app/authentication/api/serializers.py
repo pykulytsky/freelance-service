@@ -2,6 +2,9 @@ from authentication.models import User
 from rest_framework.authentication import authenticate
 from rest_framework import serializers
 
+from authentication.utils import set_login_time
+
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -44,6 +47,8 @@ class LoginSerializer(serializers.Serializer):
             serializers.ValidationError('Для входу потрібен пароль.')
 
         user = authenticate(username=email, password=password)
+        if user:
+            set_login_time(user)
 
         if user is None:
             raise serializers.ValidationError("Такого користувача не знайдено.")
