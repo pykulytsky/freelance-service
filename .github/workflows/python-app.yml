@@ -25,9 +25,9 @@ jobs:
       uses: Harmon758/postgresql-action@v1.0.0
       with: 
         postgresql version: 12.2
-        postgresql db: freelance
-        postgresql user: o_p
-        postgresql password: 1234
+        postgresql db: ''
+        postgresql user: ''
+        postgresql password: ''
 
     - name: Install dependencies
       run: |
