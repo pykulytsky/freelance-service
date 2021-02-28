@@ -1,5 +1,5 @@
 from authentication.tasks import send_new_password
-from authentication.utils import generate_random_password
+from authentication.utils import generate_random_password, get_client_ip
 from authentication.permissions import UserActionPermission
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
@@ -119,7 +119,8 @@ class UserViewSet(viewsets.ModelViewSet):
             request.user.set_password(new_password)
             request.user.save()
 
-            send_new_password.delay(request.user.id, new_password)
+            ip = get_client_ip(request)
+            send_new_password.delay(request.user.id, new_password, ip)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:

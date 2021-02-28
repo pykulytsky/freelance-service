@@ -74,10 +74,11 @@ class Receiver():
             'date': timezone.now().strftime('%m/%d/%Y, %H:%M:%S')
         }
 
-    def to_json_after_reset_password(self, password: str) -> dict:
+    def to_json_reset_password(self, password: str, ip_addr: str) -> dict:
         return {
             'first_name': self.first_name,
             'email': self.email,
             'password': password,
-            'date': timezone.now().strftime('%m/%d/%Y, %H:%M:%S')
+            'date': timezone.now().strftime('%m/%d/%Y, %H:%M:%S'),
+            'ip': ip_addr
         }

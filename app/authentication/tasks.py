@@ -62,13 +62,13 @@ def send_verification_email_by_sendgrid(user_id: int):
 
 
 @app.task
-def send_new_password(user_id: int, password: str):
+def send_new_password(user_id: int, password: str, ip_addr: str):
     _user = User.objects.get(id=user_id)
 
     if not settings.DEBUG:
         receiver = Receiver.from_user_model(_user)
 
         client = SendgridAPIClient()
-        response = client.send_new_password(receiver=receiver, password=password)
+        response = client.send_new_password(receiver=receiver, password=password, ip_addr=ip_addr)
 
         return response.status_code
