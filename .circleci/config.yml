@@ -12,8 +12,15 @@ jobs:
       - python/install-deps
       - python/save-cache
       - run:
-          command: pytest -v
+          command: |
+            cd app
+            pytest -v
           name: Test
+      - run:
+          command: |
+            cd app
+            flake8
+          name: Lint
 
 workflows:
   main:
