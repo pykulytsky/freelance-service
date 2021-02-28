@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from authentication.utils import set_login_time
 
+from django.shortcuts import get_object_or_404
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -41,20 +42,20 @@ class LoginSerializer(serializers.Serializer):
         password = validation_data.get('password', None)
 
         if email is None:
-            raise serializers.ValidationError("Для вєоду потрібна пошта.")
+            raise serializers.ValidationError("No email provided")
 
         if password is None:
-            serializers.ValidationError('Для входу потрібен пароль.')
+            serializers.ValidationError("No email provided")
 
         user = authenticate(username=email, password=password)
         if user:
             set_login_time(user)
 
         if user is None:
-            raise serializers.ValidationError("Такого користувача не знайдено.")
+            raise serializers.ValidationError("No such user found.")
 
         if not user.is_active:
-            raise serializers.ValidationError("Користувач не активний.")
+            raise serializers.ValidationError("User is not active")
 
         return {
             'token': user.token,
@@ -94,3 +95,17 @@ class PasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['password']
+
+
+class PasswordResetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email']
+
+    def validate(self, validation_data):
+        email = validation_data.get('email', None)
+        get_object_or_404(User, email=email)
+
+        return {
+            'status': 'password reset'
+        }

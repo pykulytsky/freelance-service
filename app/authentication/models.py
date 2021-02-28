@@ -1,3 +1,4 @@
+from app.mixins import ModelChangeDetectMixin
 from typing import Dict, Tuple
 from django.db import models
 from django.conf import settings
@@ -99,7 +100,7 @@ class Role(models.Model):
         return self.get_id_display()
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, ModelChangeDetectMixin):
     username = models.CharField(db_index=True,
                                 max_length=255,
                                 unique=True)

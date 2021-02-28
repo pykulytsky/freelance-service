@@ -73,3 +73,11 @@ class Receiver():
             'job_title': job.title,
             'date': timezone.now().strftime('%m/%d/%Y, %H:%M:%S')
         }
+
+    def to_json_after_reset_password(self, password: str) -> dict:
+        return {
+            'first_name': self.first_name,
+            'email': self.email,
+            'password': password,
+            'date': timezone.now().strftime('%m/%d/%Y, %H:%M:%S')
+        }

@@ -41,3 +41,14 @@ class SendgridAPIClient():
             subject="You just create new job",
             dynamic_template_data=dynamic_template_data
         )
+
+    def send_new_password(self, receiver: Receiver, password: str) -> Callable[[str, str, Optional[dict], str, str], SendgridMail]:
+        return self.send(
+            template_id=settings.SENDGRID_SEND_NEW_PASSWORD_TEMPLATE_ID,
+            receiver_email=receiver.email,
+            subject="You just, reset your password",
+            dynamic_template_data={
+                **receiver.to_json_new_password(password)
+            },
+            receiver_name=receiver.first_name + ' ' + receiver.last_name
+        )

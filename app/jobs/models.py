@@ -1,3 +1,4 @@
+from app.mixins import ModelChangeDetectMixin
 from django.db import models
 from behaviors.behaviors import Timestamped
 from django.db.models.manager import Manager
@@ -19,7 +20,7 @@ class BaseJobManager(Manager):
             return None
 
 
-class Job(Timestamped):
+class Job(Timestamped, ModelChangeDetectMixin):
     title = models.CharField(
         max_length=1024,
         verbose_name="Job name")

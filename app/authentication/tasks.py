@@ -1,11 +1,9 @@
 from authentication.models import User
-from uuid import UUID
 from django.template.loader import get_template
 from app.celery import app
 from django.core.mail import get_connection, EmailMessage
 
 from django.conf import settings
-from django.utils import timezone
 
 from sendgrid.client import SendgridAPIClient
 from sendgrid.mail import Receiver
@@ -53,15 +51,24 @@ def send_verification_mail(
 
 
 @app.task
-def send_verification_email_by_sendgrid(
-    user_id: int
-):
+def send_verification_email_by_sendgrid(user_id: int):
     if not settings.DEBUG:
         receiver = Receiver.from_user_model(User.objects.get(id=user_id))
 
         client = SendgridAPIClient()
-        response = client.send_verification_mail(
-            receiver=receiver
-        )
+        response = client.send_verification_mail(receiver=receiver)
+
+        return response.status_code
+
+
+@app.task
+def send_new_password(user_id: int, password: str):
+    _user = User.objects.get(id=user_id)
+
+    if not settings.DEBUG:
+        receiver = Receiver.from_user_model(_user)
+
+        client = SendgridAPIClient()
+        response = client.send_new_password(receiver=receiver, password=password)
 
         return response.status_code
