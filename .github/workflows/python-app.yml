@@ -28,11 +28,12 @@ jobs:
         postgresql db: 'test'
         postgresql user: 'test_user'
         postgresql password: '1234'
-
-    - uses: actions/cache@v2
+    
+    - name: Cache dependencies
+      uses: actions/cache@v2
       id: cache
       with:
-        path: /opt/hostedtoolcache/Python/3.9/x64/lib/python3.9/site-packages/*
+        path: /opt/hostedtoolcache/Python/3.9.1/x64/lib/python3.9/site-packages
         key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
