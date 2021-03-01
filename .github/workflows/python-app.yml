@@ -56,18 +56,6 @@ jobs:
         postgresql user: 'test_user'
         postgresql password: '1234'
 
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        # This path is specific to Ubuntu
-        path: /opt/hostedtoolcache/Python/3.9.1/x64/lib/python3.9/site-packages
-        # Look to see if there is a cache hit for the corresponding requirements file
-        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-          ${{ runner.os }}-pip3-
-          ${{ runner.os }}-
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
