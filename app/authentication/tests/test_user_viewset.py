@@ -1,8 +1,5 @@
-from django.conf import settings
-from authentication.models import User
 import pytest
 from django.urls import reverse
-from django.contrib.auth.hashers import check_password, make_password
 
 
 pytestmark = [pytest.mark.django_db]

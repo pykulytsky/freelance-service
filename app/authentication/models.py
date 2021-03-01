@@ -101,33 +101,37 @@ class Role(models.Model):
 
 
 class User(AbstractBaseUser, PermissionsMixin, ModelChangeDetectMixin):
-    username = models.CharField(db_index=True,
-                                max_length=255,
-                                unique=True)
-    email = models.EmailField(validators=[validators.validate_email],
-                              unique=True,
-                              blank=False)
-
+    username = models.CharField(
+        db_index=True,
+        max_length=255,
+        unique=True
+    )
+    email = models.EmailField(
+        validators=[validators.validate_email],
+        unique=True,
+        blank=False
+    )
     age = models.IntegerField(
         validators=[custom_validators.validate_age, ],
         verbose_name='Age',
-        blank=True, null=True)
+        blank=True, null=True
+    )
 
     first_name = models.CharField(max_length=255, blank=True, verbose_name="First Name")
+    last_name = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Last Name"
+    )
 
-    last_name = models.CharField(max_length=255,
-                                 blank=True,
-                                 verbose_name="Last Name")
-
-    avatar = models.ImageField(upload_to="assets/avatars/",
-                               blank=True)
+    avatar = models.ImageField(upload_to="assets/avatars/", blank=True)
     avatar_url = models.URLField(blank=True, null=True)
 
     total_jobs_completed = models.PositiveIntegerField(default=0)
-
     rating = models.PositiveSmallIntegerField(
         validators=[custom_validators.rating_validator, ], verbose_name="Rating",
-        default=0)
+        default=0
+    )
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -136,25 +140,25 @@ class User(AbstractBaseUser, PermissionsMixin, ModelChangeDetectMixin):
     is_active = models.BooleanField(default=False)
 
     email_verified = models.BooleanField(default=False)
-    email_verification_code = models.UUIDField(max_length=32,
-                                               default=uuid.uuid4,
-                                               editable=False)
+    email_verification_code = models.UUIDField(
+        max_length=32,
+        default=uuid.uuid4,
+        editable=False
+    )
     subscribe_to_mailing = models.BooleanField(default=False)
 
     role = models.ForeignKey(
         Role,
         related_name="users",
-        on_delete=models.PROTECT)
-    user_verified = models.BooleanField(
-        blank=True,
-        null=True
+        on_delete=models.PROTECT
     )
+    user_verified = models.BooleanField(blank=True, null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
 
     country = CountryField(blank=True)
 
-    first_login = models.DateTimeField(verbose_name="Field updates when user login", blank=True, null=True)
+    first_login = models.DateTimeField(verbose_name="Field updates when user login first time", blank=True, null=True)
     last_login = models.DateTimeField(verbose_name="Field updates when user login", blank=True, null=True)
 
     card_number = CardNumberField('Card Number', blank=True, null=True)
@@ -208,14 +212,10 @@ class User(AbstractBaseUser, PermissionsMixin, ModelChangeDetectMixin):
 
 
 class Company(models.Model):
-    name = models.CharField(
-        max_length=512,
-        verbose_name="Company name")
+    name = models.CharField(max_length=512, verbose_name="Company name")
 
     country = CountryField()
-    address = models.CharField(
-        max_length=1024,
-        verbose_name="Adress")
+    address = models.CharField(max_length=1024, verbose_name="Adress")
 
 
 class Agency(models.Model):
