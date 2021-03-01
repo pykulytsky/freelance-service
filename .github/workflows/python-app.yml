@@ -55,7 +55,7 @@ jobs:
         postgresql db: 'test'
         postgresql user: 'test_user'
         postgresql password: '1234'
-    
+
     - name: Cache dependencies
       uses: actions/cache@v2
       with:
@@ -75,7 +75,7 @@ jobs:
     - name: Test with pytest
       run: |
         cd app
-        pytest -v --ignore=sendgrid pytest -v --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
+        pytest -v --ignore=sendgrid  --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
 
     - name: Upload pytest test results
       uses: actions/upload-artifact@v2
