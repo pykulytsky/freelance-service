@@ -108,3 +108,4 @@ vine==5.0.0
 wcwidth==0.2.5
 wrapt==1.12.1
 zope.interface==5.2.0
+pytest-cov==2.11.1
