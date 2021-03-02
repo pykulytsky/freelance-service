@@ -95,7 +95,8 @@ def superuser(django_user_model, performer_role, mixer, image):
         role=performer_role,
         is_superuser=True,
         is_staff=True,
-        avatar=image)
+        avatar=image,
+        password='123456')
 
 
 @pytest.fixture

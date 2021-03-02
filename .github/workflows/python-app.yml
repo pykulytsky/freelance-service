@@ -34,8 +34,12 @@ jobs:
         flake8 . --count --exit-zero --max-line-length=127 --statistics
 
   test:
+    needs: lint
     name: Test with pytest
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
     - uses: actions/checkout@v2

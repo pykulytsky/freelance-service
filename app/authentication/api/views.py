@@ -126,4 +126,4 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response({
                 'error': 'No user with that email address'
-            })
+            }, status=status.HTTP_400_BAD_REQUEST)

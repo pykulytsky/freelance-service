@@ -101,11 +101,3 @@ class PasswordResetSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email']
-
-    def validate(self, validation_data):
-        email = validation_data.get('email', None)
-        get_object_or_404(User, email=email)
-
-        return {
-            'status': 'password reset'
-        }
