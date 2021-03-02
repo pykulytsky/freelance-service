@@ -22,12 +22,11 @@ jobs:
       with:
         python-version: 3.9
 
-
     - name: Install flake8
       run: |
         pip3 install flake8
     - name: Run flake8
-      uses: suo/flake8-github-action@releases/v1
+      uses: julianwachholz/flake8-action@v1.1.0
       with:
         checkName: 'lint'
       env:
