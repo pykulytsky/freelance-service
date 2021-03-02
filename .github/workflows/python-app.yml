@@ -65,10 +65,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         pip3 install -r requirements.txt
+    - name: Load secrets
+        env:
+          SENDGRID_API_KEY: {{secrets.SENDGRID_API_KEY}}
+          SENDGRID_VERIFY_EMAIL_TEMPLATE_ID: {{secrets.SENDGRID_VERIFY_EMAIL_TEMPLATE_ID}}
     - name: Test with pytest
       run: |
         cd app
-        pytest -v --ignore=sendgrid  --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
+        pytest -v  --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
 
     - name: Upload pytest test results
       uses: actions/upload-artifact@v2
