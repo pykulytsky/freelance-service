@@ -25,13 +25,12 @@ jobs:
     - name: Install flake8
       run: |
         pip3 install flake8
-    - name: Lint with flake8
-      run: |
-        cd app
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-line-length=127 --statistics
+    - name: Run flake8
+      uses: julianwachholz/flake8-action@v1.1.0
+      with:
+        checkName: 'lint'
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     needs: lint
@@ -65,14 +64,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         pip3 install -r requirements.txt
-    - name: Load secrets
-        env:
-          SENDGRID_API_KEY: ${{secrets.SENDGRID_API_KEY}}
-          SENDGRID_VERIFY_EMAIL_TEMPLATE_ID: ${{secrets.SENDGRID_VERIFY_EMAIL_TEMPLATE_ID}}
+
     - name: Test with pytest
       run: |
         cd app
-        pytest -v  --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
+        pytest -v --ignore=sendgrid --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
+      env:
+        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        SENDGRID_VERIFY_EMAIL_TEMPLATE_ID: ${{ secrets.SENDGRID_VERIFY_EMAIL_TEMPLATE_ID }}
 
     - name: Upload pytest test results
       uses: actions/upload-artifact@v2
