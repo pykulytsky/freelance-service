@@ -22,16 +22,24 @@ jobs:
       with:
         python-version: 3.9
 
+    # - name: Install flake8
+    #   run: |
+    #     pip3 install flake8
+    # - name: Lint with flake8
+    #   run: |
+    #     cd app
+    #     # stop the build if there are Python syntax errors or undefined names
+    #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+    #     flake8 . --count --exit-zero --max-line-length=127 --statistics
     - name: Install flake8
-      run: |
-        pip3 install flake8
-    - name: Lint with flake8
-      run: |
-        cd app
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-line-length=127 --statistics
+        run: pip install flake8
+      - name: Run flake8
+        run: |
+          cd app
+        uses: suo/flake8-github-action@releases/v1
+        with:
+          checkName: 'flake8_py3'
 
   test:
     needs: lint
@@ -69,7 +77,7 @@ jobs:
     - name: Test with pytest
       run: |
         cd app
-        pytest -v --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
+        pytest -v --ignore=sendgrid --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
       env:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         SENDGRID_VERIFY_EMAIL_TEMPLATE_ID: ${{ secrets.SENDGRID_VERIFY_EMAIL_TEMPLATE_ID }}
