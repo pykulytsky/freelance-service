@@ -1,8 +1,6 @@
 import pytest
 from django.urls import reverse
 
-from authentication.tasks import send_new_password
-
 
 pytestmark = [pytest.mark.django_db]
 

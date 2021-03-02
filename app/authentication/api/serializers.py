@@ -4,8 +4,6 @@ from rest_framework import serializers
 
 from authentication.utils import set_login_time
 
-from django.shortcuts import get_object_or_404
-
 
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
