@@ -37,26 +37,3 @@ def test_change_password(api, anon_api, superuser):
     })
 
     assert login_response.status_code == 200
-
-
-def test_reset_password(api, superuser):
-
-    url = reverse('user-reset-password', kwargs={'pk': superuser.id})
-    response = api.post(url, {
-        'email': superuser.email
-    })
-
-    assert response.status_code == 200
-
-
-def test_send_email_on_reset_password(mocker, api, superuser):
-    mocker.patch('authentication.tasks.send_new_password.delay')
-
-    url = reverse('user-reset-password', kwargs={'pk': superuser.id})
-    response = api.post(url, {
-        'email': superuser.email
-    })
-
-    assert response.status_code == 200
-    assert False, response.data
-    assert send_new_password.delay.assert_called_once()
