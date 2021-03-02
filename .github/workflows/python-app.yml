@@ -28,8 +28,8 @@ jobs:
         pip3 install flake8
     - name: Run flake8
       uses: suo/flake8-github-action@releases/v1
-        with:
-          checkName: 'lint'
+      with:
+        checkName: 'lint'
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
