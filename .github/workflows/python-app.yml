@@ -27,9 +27,9 @@ jobs:
       run: |
         pip3 install flake8
     - name: Run flake8
-      uses: suo/flake8-github-action@releases/v1
-      with:
-        checkName: 'lint'
+      uses: tayfun/flake8-your-pr@master
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     needs: lint
