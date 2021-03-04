@@ -3,15 +3,19 @@ from django.utils import timezone
 
 import string
 import random
+from .exceptions import InvalidTimeError
 
 
 def set_login_time(user: User) -> None:
-    if not user.first_login:
-        user.first_login = user.last_login = timezone.now()
-    else:
-        user.last_login = timezone.now()
+    try:
+        if not user.first_login:
+            user.first_login = user.last_login = timezone.now()
+        else:
+            user.last_login = timezone.now()
 
-    user.save()
+        user.save()
+    except (TypeError, ValueError):
+        raise InvalidTimeError("Invalid time")
 
 
 def generate_random_password() -> str:
