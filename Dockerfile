@@ -8,10 +8,13 @@ COPY requirements.txt requirements.txt
 
 RUN pip3 install -r requirements.txt
 
-ENV POSTGRESQL_HOST host.docker.internal
+ENV POSTGRESQL_HOST 172.17.0.1/16
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 COPY . .
 
-EXPOSE 5432
+EXPOSE 8000
 
 CMD [ "python3", "app/manage.py", "runserver" ]

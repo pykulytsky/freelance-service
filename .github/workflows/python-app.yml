@@ -67,7 +67,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
           ${{ runner.os }}-pip3-
-          ${{ runner.os }}-
+          ${{ runner.os }}-pytest-
 
     - name: Install dependencies
       env:
