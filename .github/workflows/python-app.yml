@@ -70,7 +70,6 @@ jobs:
           ${{ runner.os }}-
 
     - name: Install dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
       env:
         pythonLocation: /opt/hostedtoolcache/Python/3.9.2/x64
         LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.9.2/x64/lib
