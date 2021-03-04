@@ -57,6 +57,9 @@ jobs:
         postgresql password: '1234'
 
     - name: Install dependencies
+      env:
+        pythonLocation: /opt/hostedtoolcache/Python/3.9.2/x64
+        LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.9.2/x64/lib
       run: |
         python -m pip install --upgrade pip
         pip install pytest
@@ -64,7 +67,7 @@ jobs:
     - name: Test with pytest
       run: |
         cd app
-        pytest -v --ignore=sendgrid --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
+        /opt/hostedtoolcache/Python/3.9.2/x64/bin/pytest -v --ignore=sendgrid --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
       env:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         SENDGRID_VERIFY_EMAIL_TEMPLATE_ID: ${{ secrets.SENDGRID_VERIFY_EMAIL_TEMPLATE_ID }}
