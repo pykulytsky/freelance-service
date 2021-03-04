@@ -52,6 +52,9 @@ jobs:
 #         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 #         flake8 . --count --exit-zero --max-line-length=127 --statistics
     - name: Test with pytest
+      env:
+        pythonLocation: /opt/hostedtoolcache/Python/3.9.2/x64
+        LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.9.2/x64/lib
       run: |
         cd app
         opt/hostedtoolcache/Python/3.9.2/x64/bin/pytest --ignore=sendgrid
