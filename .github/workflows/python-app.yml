@@ -84,6 +84,7 @@ jobs:
       env:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         SENDGRID_VERIFY_EMAIL_TEMPLATE_ID: ${{ secrets.SENDGRID_VERIFY_EMAIL_TEMPLATE_ID }}
+        POSTGRES_DB_HOST: 127.0.0.1
 
     - name: Upload pytest test results
       uses: actions/upload-artifact@v2
