@@ -94,10 +94,10 @@ class UserCreator:
     def create(self) -> Union[User, None]:
         try:
             if int(self.data['role']) == 1:
-                self.user = self.get_user() or self.create_performer()
+                self.user = self._user or self.create_performer()
 
             elif int(self.data['role']) == 2:
-                self.user = self.get_user() or self.create_employer()
+                self.user = self._user or self.create_employer()
 
             else:
                 raise UserRoleError(f"No role with such id({self.data['role']})")
@@ -137,7 +137,7 @@ class UserCreator:
             client = AppMailchimp()
             audience_id = settings.MAILCHIMP_AUDIENCE_ID
 
-            client.subscribe_django_user(audience_id, self.get_user())
+            client.subscribe_django_user(audience_id, self._user)
 
     def create_favorite_jobs_list(self) -> FavoritesJobs:
-        return FavoritesJobs.objects.update_or_create(user=self.get_user())
+        return FavoritesJobs.objects.update_or_create(user=self._user)

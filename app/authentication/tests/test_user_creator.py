@@ -122,9 +122,22 @@ def test_creator_not_emit_wrong_create_method(mocker, creator, user_data):
     assert isinstance(user, User)
 
 
-def test_creator_emit_subscribe_method(mocker, creator, user_data):
+def test_creator_not_emit_subscribe_method_by_default(mocker, creator, user_data):
     user_creator = creator(
         **user_data
+    )
+    mocker.patch('authentication.creator.UserCreator.subscribe')
+
+    user = user_creator()
+
+    user_creator.subscribe.assert_not_called()
+    assert isinstance(user, User)
+
+
+def test_creator_emit_subscribe_method_if_such_field_is_set(mocker, creator, user_data):
+    user_creator = creator(
+        confirm_subscribe=True,
+        **user_data,
     )
     mocker.patch('authentication.creator.UserCreator.subscribe')
 
