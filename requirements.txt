@@ -74,7 +74,6 @@ pycparser==2.20
 pyflakes==2.2.0
 Pygments==2.8.0
 PyHamcrest==2.0.2
-PyJWT==1.7.1
 pylint==2.6.0
 pyOpenSSL==20.0.1
 pyparsing==2.4.7
@@ -109,3 +108,4 @@ wcwidth==0.2.5
 wrapt==1.12.1
 zope.interface==5.2.0
 pytest-cov==2.11.1
+PyJWT==1.7.1

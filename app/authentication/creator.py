@@ -85,8 +85,8 @@ class UserCreator:
                 raise EmailNotValid("Your email is not valid.")
         else:
             self.verify_email()
-
-        self.subscribe()
+        if self.confirm_subscribe:
+            self.subscribe()
         self.create_favorite_jobs_list()
 
         return user
@@ -125,11 +125,12 @@ class UserCreator:
         else:
             raise ValidationError(serializer.errors)
 
-    def get_user(self) -> User:
+    @property
+    def _user(self) -> User:
         return User.objects.get_or_none(email=self.data['email'])
 
     def verify_email(self) -> Union[int, None]:
-        send_verification_email_by_sendgrid.delay(self.get_user().id)
+        send_verification_email_by_sendgrid.delay(self._user.id)
 
     def subscribe(self):
         if not settings.DEBUG and self.subscribe:
