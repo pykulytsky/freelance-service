@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=#pragma_once
   web:
     build: .
-    command: python app/manage.py runserver 0.0.0.0:8000
+    command: uwsgi --http 0.0.0.0:8000 --ini uwsgi.ini
     volumes:
       - .:/app
     ports:
