@@ -10,11 +10,12 @@ env/
 .env/
 .vscode/
 
-static/assets/assets/avatars/image_*.gif
-static/admin/
-static/jazzmin/
-static/rest_framework/
-static/vendor/
+src/static/assets/assets/avatars/image_*.gif
+src/static/admin/
+src/static/jazzmin/
+src/static/rest_framework/
+src/static/vendor/
+src/static/drf_yasg/
 
 fishenv/
 .fishenv/

@@ -79,7 +79,7 @@ jobs:
         pip3 install -r requirements.txt
     - name: Test with pytest
       run: |
-        cd app
+        cd src
         /opt/hostedtoolcache/Python/3.9.2/x64/bin/pytest -v --ignore=sendgrid --cov --junitxml=junit/test-results.xml --cov-report=xml --cov-report=html
       env:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
@@ -90,13 +90,13 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: pytest-results
-        path: app/junit/test-results.xml
+        path: src/junit/test-results.xml
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}
     - name: Upload pytest coverage results
       uses: actions/upload-artifact@v2
       with:
         name: pytest-results
-        path: app/coverage.xml
+        path: src/coverage.xml
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}
