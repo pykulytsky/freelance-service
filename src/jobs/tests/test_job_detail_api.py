@@ -6,7 +6,7 @@ pytestmark = [pytest.mark.django_db]
 
 
 def test_job_detail_api_success(api, job):
-    url = reverse('job-detail', kwargs={'id': job.id})
+    url = reverse('job-detail', kwargs={'pk': job.id})
 
     response = api.patch(url, {
         'title': 'changed title'
@@ -16,7 +16,7 @@ def test_job_detail_api_success(api, job):
 
 
 def test_job_detail_api_emit_save_method(api, job, mocker):
-    url = reverse('job-detail', kwargs={'id': job.id})
+    url = reverse('job-detail', kwargs={'pk': job.id})
     mocker.patch('jobs.models.Job.save')
 
     response = api.patch(url, {
@@ -28,7 +28,7 @@ def test_job_detail_api_emit_save_method(api, job, mocker):
 
 
 def test_job_detail_api_access_not_author(api, another_job, mocker):
-    url = reverse('job-detail', kwargs={'id': another_job.id})
+    url = reverse('job-detail', kwargs={'pk': another_job.id})
     mocker.patch('jobs.models.Job.save')
 
     with pytest.raises(PermissionError):
@@ -40,7 +40,7 @@ def test_job_detail_api_access_not_author(api, another_job, mocker):
 
 
 def test_job_detail_api_change_field(api, job):
-    url = reverse('job-detail', kwargs={'id': job.id})
+    url = reverse('job-detail', kwargs={'pk': job.id})
 
     response = api.patch(url, {
         'title': 'changed title'
@@ -51,7 +51,7 @@ def test_job_detail_api_change_field(api, job):
 
 
 def test_job_detail_api_delete_record(api, job):
-    url = reverse('job-detail', kwargs={'id': job.id})
+    url = reverse('job-detail', kwargs={'pk': job.id})
 
     response = api.delete(url)
 
@@ -60,7 +60,7 @@ def test_job_detail_api_delete_record(api, job):
 
 
 def test_job_detail_api_get_record(api, job):
-    url = reverse('job-detail', kwargs={'id': job.id})
+    url = reverse('job-detail', kwargs={'pk': job.id})
 
     response = api.get(url)
 
@@ -82,7 +82,7 @@ def test_job_detail_api_get_record(api, job):
     ]
 )
 def test_job_detail_api_patch_each_field(api, job, field, data):
-    url = reverse('job-detail', kwargs={'id': job.id})
+    url = reverse('job-detail', kwargs={'pk': job.id})
 
     response = api.patch(url, {field: data})
 

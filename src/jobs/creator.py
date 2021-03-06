@@ -18,8 +18,22 @@ class JobCreateSerializer(serializers.ModelSerializer):
         exclude = ('performer', )
 
 
-class JobCreator:
+class ErrorHandlerMixin(object):
+    def __init__(self) -> None:
+        self.errors = list()
+
+    def update_errors(self, error_message):
+        self._errors.append({'error': error_message})
+
+    @property
+    def errors(self) -> dict:
+        if len(self._errors):
+            return self._errors
+
+
+class JobCreator():
     """Service object for create job."""
+
     def __init__(
         self,
         author: User,
@@ -43,14 +57,14 @@ class JobCreator:
             self.update_errors(e.__str__())
 
         self.data = {
-                'title': title,
-                'description': description,
-                'author': author.id,
-                'price': price,
-                'is_price_fixed': is_price_fixed,
-                'deadline': deadline,
-                'plan': plan,
-                **kwargs
+            'title': title,
+            'description': description,
+            'author': author.id,
+            'price': price,
+            'is_price_fixed': is_price_fixed,
+            'deadline': deadline,
+            'plan': plan,
+            **kwargs
         }
         if isinstance(deadline, str):
             self.data.update({
@@ -68,7 +82,7 @@ class JobCreator:
                 self.notify_creator()
 
             return self.job
-        except Exception as e: # noqa
+        except Exception as e:  # noqa
             self.update_errors(e.__str__())
 
     def create_room(self) -> Room:
@@ -112,6 +126,7 @@ class ProposalCreateSerializer(serializers.ModelSerializer):
 
 class ProposalCreator:
     """Service object for create proposal."""
+
     def __init__(
         self,
         job: Job,

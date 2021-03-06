@@ -134,7 +134,14 @@ class JobViewSet(viewsets.ModelViewSet):
     """
     queryset = Job.objects.all()
     serializer_class = JobListSerializer
-    permission_classes = (IsAuthenticated, )
+
+    def get_permissions(self):
+        if self.action in ('update', 'partial_update', 'destroy'):
+            self.permission_classes = (IsAuthenticated, JobOwnerPermission)
+        else:
+            self.permission_classes = (IsAuthenticated, )
+
+        return super().get_permissions()
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
@@ -151,11 +158,33 @@ class JobViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=['GET'], url_path='proposals')
+    def proposals(self, request, pk=None):
+        proposals = self.get_object().proposals.all()
+        serializer = self.serializer_class(proposals, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['GET'], url_path='proposals/<int:proposal_id>')
+    def proposals_detail(self, request, proposal_id, pk=None):
+        proposals = self.get_object().proposals.get(id=proposal_id)
+        serializer = self.serializer_class(proposals)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=['POST'])
-    @permission(JobOwnerPermission)
     def approve(self, request, pk=None):
         job = self.get_object()
         proposal = job.approve_proposal(request.data['proposal_id'])
         if proposal:
             serializer = ProposalListSerializer(job.approved_proposal)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def proposals_list(self):
+        proposals = self.get_object().proposals.all()
+        serializer = self.serializer_class(proposals, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def proposals_create(self):
+        raise NotImplementedError()

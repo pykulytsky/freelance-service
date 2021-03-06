@@ -9,7 +9,7 @@ class JobOwnerPermission(BasePermission):
     """
 
     def has_permission(self, request, view):
-        job_id = view.kwargs.get('id', None)
+        job_id = view.kwargs.get('id', None) or view.kwargs.get('pk', None)
         _job = Job.objects.get(id=job_id)
 
         if _job.author == request.user:
