@@ -1,7 +1,7 @@
-import pytest
-from django.urls import reverse
 import jwt
+import pytest
 from django.conf import settings
+from django.urls import reverse
 
 pytestmark = [pytest.mark.django_db]
 

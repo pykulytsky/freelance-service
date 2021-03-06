@@ -1,12 +1,11 @@
-from authentication.models import User
-from django.template.loader import get_template
 from app.celery import app
-from django.core.mail import get_connection, EmailMessage
-
 from django.conf import settings
-
+from django.core.mail import EmailMessage, get_connection
+from django.template.loader import get_template
 from sendgrid.client import SendgridAPIClient
 from sendgrid.mail import Receiver
+
+from authentication.models import User
 
 
 @app.task

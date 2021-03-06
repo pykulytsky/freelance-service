@@ -1,8 +1,8 @@
-import requests
-from django.conf import settings
+from typing import Optional
 from urllib.parse import urljoin
 
-from typing import Optional
+import requests
+from django.conf import settings
 
 
 class BearerAuth(requests.auth.AuthBase):

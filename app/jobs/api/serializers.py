@@ -1,8 +1,6 @@
-from jobs.models import FavoritesJobs, Job, Proposal
-
 from authentication.api.serializers import UserPublicSerializer
 from djmoney.contrib.django_rest_framework import MoneyField
-
+from jobs.models import FavoritesJobs, Job, Proposal
 from rest_framework import serializers
 
 

@@ -1,18 +1,16 @@
+from authentication.creator import UserCreateSerializer, UserCreator
+from authentication.models import User
+from authentication.permissions import UserActionPermission
 from authentication.tasks import send_new_password
 from authentication.utils import generate_random_password, get_client_ip
-from authentication.permissions import UserActionPermission
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
-from .serializers import LoginSerializer, PasswordResetSerializer, UserPublicSerializer, PasswordSerializer
-from authentication.creator import UserCreateSerializer
-from authentication.creator import UserCreator
-
-from authentication.models import User
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .serializers import (LoginSerializer, PasswordResetSerializer,
+                          PasswordSerializer, UserPublicSerializer)
 
 
 class LoginAPIView(APIView):

@@ -1,11 +1,11 @@
-from chat.models import Room
-from authentication.models import User
-from jobs.models import Job
-import pytest
-from djmoney.money import Money
-from jobs.tasks import send_email_after_create_job
-
 from datetime import date
+
+import pytest
+from authentication.models import User
+from chat.models import Room
+from djmoney.money import Money
+from jobs.models import Job
+from jobs.tasks import send_email_after_create_job
 
 pytestmark = [pytest.mark.django_db]
 

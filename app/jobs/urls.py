@@ -1,7 +1,6 @@
 from django.urls import path
 
-from jobs.api.views import * # noqa
-
+from jobs.api.views import *  # noqa
 
 urlpatterns = [
     path('jobs/', JobListAPI.as_view(), name='job-list'),

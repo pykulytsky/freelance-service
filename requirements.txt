@@ -109,3 +109,4 @@ wrapt==1.12.1
 zope.interface==5.2.0
 pytest-cov==2.11.1
 PyJWT==1.7.1
+flake8-bugbear==21.3.1

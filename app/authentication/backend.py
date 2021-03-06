@@ -1,8 +1,9 @@
 from datetime import datetime
-import jwt
 
+import jwt
 from django.conf import settings
 from rest_framework import authentication, exceptions
+
 from authentication.models import User
 
 
@@ -37,7 +38,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
 
-        except:
+        except: # noqa
             message = 'Can`t authenticate, token didn`t match'
             raise exceptions.AuthenticationFailed(message)
 

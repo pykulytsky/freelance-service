@@ -1,5 +1,6 @@
 import pytest
-from sendgrid.http import SendgridHTTP, SendgridWrongRequest, SendgridAuthenticationFailed
+from sendgrid.http import (SendgridAuthenticationFailed, SendgridHTTP,
+                           SendgridWrongRequest)
 
 pytestmark = [
     pytest.mark.django_db,

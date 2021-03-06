@@ -1,13 +1,10 @@
-from authentication.models import Role
 import pytest
-
-from rest_framework.test import APIClient
-from mixer.backend.django import mixer as _mixer
-
+from authentication.models import Role
 from jobs.creator import JobCreator, ProposalCreator
 from jobs.models import FavoritesJobs
-
+from mixer.backend.django import mixer as _mixer
 from PIL import Image
+from rest_framework.test import APIClient
 
 
 @pytest.fixture

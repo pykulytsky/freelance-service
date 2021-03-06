@@ -1,5 +1,6 @@
-from django.core.exceptions import ValidationError
 from decimal import Decimal
+
+from django.core.exceptions import ValidationError
 
 
 def validate_age(age):

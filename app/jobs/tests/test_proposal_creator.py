@@ -1,10 +1,9 @@
-import pytest
-from moneyed.classes import Money
 from datetime import date
 
-from rest_framework.exceptions import ValidationError
-
+import pytest
 from jobs.models import Proposal
+from moneyed.classes import Money
+from rest_framework.exceptions import ValidationError
 
 pytestmark = [pytest.mark.django_db]
 

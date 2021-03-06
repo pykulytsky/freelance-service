@@ -1,9 +1,9 @@
+from app.celery import app
 from authentication.models import User
+from django.conf import settings
+from django.utils.module_loading import import_string
 from sendgrid.client import SendgridAPIClient
 from sendgrid.mail import Receiver
-from app.celery import app
-from django.utils.module_loading import import_string
-from django.conf import settings
 
 from .models import Job
 

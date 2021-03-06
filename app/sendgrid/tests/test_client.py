@@ -1,9 +1,8 @@
 import pytest
+from authentication.models import Role
+from mixer.backend.django import mixer
 from sendgrid.client import SendgridAPIClient
 from sendgrid.mail import Receiver
-from mixer.backend.django import mixer
-
-from authentication.models import Role
 
 pytestmark = [pytest.mark.django_db]
 

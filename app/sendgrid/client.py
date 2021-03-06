@@ -1,9 +1,9 @@
-from typing import Optional
-from .http import SendgridHTTP
-from .mail import SendgridMail, Receiver
+from typing import Callable, Optional
 
 from django.conf import settings
-from typing import Callable
+
+from .http import SendgridHTTP
+from .mail import Receiver, SendgridMail
 
 
 class SendgridAPIClient():

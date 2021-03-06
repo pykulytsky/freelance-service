@@ -1,9 +1,9 @@
 from datetime import datetime
-import pytest
-from django.urls import reverse
-import jwt
-from django.conf import settings
 
+import jwt
+import pytest
+from django.conf import settings
+from django.urls import reverse
 from rest_framework import exceptions
 
 pytestmark = [pytest.mark.django_db]

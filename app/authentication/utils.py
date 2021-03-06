@@ -1,9 +1,10 @@
-from .models import User
+import random
+import string
+
 from django.utils import timezone
 
-import string
-import random
 from .exceptions import InvalidTimeError
+from .models import User
 
 
 def set_login_time(user: User) -> None:

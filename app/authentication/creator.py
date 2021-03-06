@@ -1,18 +1,16 @@
 from typing import Optional, Union
 
+from django.conf import settings
+from jobs.models import FavoritesJobs
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from authentication.mailchimp.client import AppMailchimp
+
+from .exceptions import *
+from .mailboxlayer import validate_email
 from .models import Role, User
 from .tasks import send_verification_email_by_sendgrid
-from .exceptions import *
-
-from .mailboxlayer import validate_email
-from django.conf import settings
-
-from jobs.models import FavoritesJobs
-
-from authentication.mailchimp.client import AppMailchimp
 
 
 class RoleSerializer(serializers.ModelSerializer):

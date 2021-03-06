@@ -1,9 +1,7 @@
+import pytest
 from authentication.exceptions import EmailNotValid, UserRoleError
 from authentication.models import User
-import pytest
-
 from authentication.tasks import send_verification_email_by_sendgrid
-
 from django.conf import settings
 
 pytestmark = [pytest.mark.django_db]

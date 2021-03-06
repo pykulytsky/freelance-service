@@ -1,9 +1,9 @@
 from datetime import date
+
 import pytest
 from django.urls import reverse
-from jobs.tasks import send_email_after_create_job
-
 from jobs.models import Job
+from jobs.tasks import send_email_after_create_job
 
 pytestmark = [pytest.mark.django_db]
 

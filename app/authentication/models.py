@@ -1,25 +1,22 @@
-from app.mixins import ModelChangeDetectMixin
-from typing import Dict, Tuple
-from django.db import models
-from django.conf import settings
-from django.core import validators
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.contrib.auth.models import BaseUserManager
-import authentication.validators as custom_validators
-
-from django.core.exceptions import ObjectDoesNotExist
-
-from jwt.exceptions import *
-import jwt
 import uuid
+from datetime import datetime, timedelta
+from typing import Dict, Tuple
 
-from datetime import datetime
-from datetime import timedelta
-
-from django_countries.fields import CountryField
-from creditcards.models import CardNumberField, CardExpiryField, SecurityCodeField
-
+import jwt
+from app.mixins import ModelChangeDetectMixin
+from creditcards.models import (CardExpiryField, CardNumberField,
+                                SecurityCodeField)
+from django.conf import settings
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
+                                        PermissionsMixin)
+from django.core import validators
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 from django.utils.translation import gettext as _
+from django_countries.fields import CountryField
+from jwt.exceptions import *
+
+import authentication.validators as custom_validators
 
 
 class BaseAuthManager(BaseUserManager):

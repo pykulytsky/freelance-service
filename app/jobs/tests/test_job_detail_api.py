@@ -1,6 +1,5 @@
 import pytest
 from django.urls import reverse
-
 from jobs.models import Job
 
 pytestmark = [pytest.mark.django_db]
@@ -88,6 +87,6 @@ def test_job_detail_api_patch_each_field(api, job, field, data):
     response = api.patch(url, {field: data})
 
     if response.status_code == 400:
-        assert False, response.data
+        assert False, response.data # noqa
     assert response.status_code == 200
     assert str(data) in eval(f'str(Job.objects.get(id=job.id).{field})')

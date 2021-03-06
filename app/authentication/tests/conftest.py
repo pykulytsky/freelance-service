@@ -1,14 +1,10 @@
 import pytest
-
-from rest_framework.test import APIClient
-
-from authentication.models import Role
 from authentication.backend import JWTAuthentication
-
-from mixer.backend.django import mixer as _mixer
 from authentication.creator import UserCreator
-
+from authentication.models import Role
+from mixer.backend.django import mixer as _mixer
 from PIL import Image
+from rest_framework.test import APIClient
 
 
 @pytest.fixture

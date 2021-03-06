@@ -1,7 +1,6 @@
 import pytest
-from django.urls import reverse
-
 from authentication.models import User
+from django.urls import reverse
 
 pytestmark = [pytest.mark.django_db]
 

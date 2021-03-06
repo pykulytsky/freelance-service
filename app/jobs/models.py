@@ -1,14 +1,11 @@
-from app.mixins import ModelChangeDetectMixin
-from django.db import models
-from behaviors.behaviors import Timestamped
-from django.db.models.manager import Manager
 import authentication.validators as custom_validators
-from django.core.exceptions import ObjectDoesNotExist
-
+from app.mixins import ModelChangeDetectMixin
 from authentication.models import User
-
+from behaviors.behaviors import Timestamped
 from chat.models import Room
-
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+from django.db.models.manager import Manager
 from djmoney.models.fields import MoneyField
 
 

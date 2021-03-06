@@ -1,17 +1,15 @@
 from datetime import date, datetime
 from typing import Optional, Union
 
-from rest_framework.exceptions import ValidationError
+from authentication.exceptions import UserNotActive, UserRoleError
 from authentication.models import User
-from rest_framework import serializers
-
+from chat.models import Room
 from djmoney.money import Money
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from .models import Job, Proposal
-from chat.models import Room
 from .tasks import send_email_after_create_job
-
-from authentication.exceptions import UserNotActive, UserRoleError
 
 
 class JobCreateSerializer(serializers.ModelSerializer):

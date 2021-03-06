@@ -1,8 +1,7 @@
 from authentication.models import User
-from rest_framework.authentication import authenticate
-from rest_framework import serializers
-
 from authentication.utils import set_login_time
+from rest_framework import serializers
+from rest_framework.authentication import authenticate
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

@@ -1,16 +1,13 @@
+from jobs.creator import JobCreator, ProposalCreator
+from jobs.models import *
+from jobs.permissions import JobOwnerPermission
+from rest_framework import generics, status, viewsets
+from rest_framework.decorators import action  # noqa
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from jobs.models import *
+
 from .serializers import *
-
-from jobs.creator import JobCreator, ProposalCreator
-
-from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
-from jobs.permissions import JobOwnerPermission
-
-from rest_framework import viewsets
-from rest_framework.decorators import action # noqa
 
 
 class JobListAPI(generics.ListCreateAPIView):

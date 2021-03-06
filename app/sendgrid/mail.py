@@ -1,11 +1,11 @@
+import uuid
+from dataclasses import dataclass
+from typing import Optional, Union
+
+from authentication.models import User
+from django.conf import settings
 from django.utils import timezone
 from jobs.models import Job
-from typing import Union, Optional
-from dataclasses import dataclass
-from authentication.models import User
-import uuid
-
-from django.conf import settings
 
 
 @dataclass

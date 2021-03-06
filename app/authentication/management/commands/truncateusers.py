@@ -1,6 +1,7 @@
 from typing import Any, Optional
-from django.core.management.base import BaseCommand
+
 from authentication.models import User
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):

@@ -1,8 +1,9 @@
-from authentication.models import Role, User
-import pytest
-import jwt
-from django.conf import settings
 from datetime import datetime
+
+import jwt
+import pytest
+from authentication.models import Role, User
+from django.conf import settings
 
 pytestmark = [pytest.mark.django_db]
 
