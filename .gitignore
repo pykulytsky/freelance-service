@@ -10,6 +10,12 @@ env/
 .env/
 .vscode/
 
+static/assets/assets/avatars/image_*.gif
+static/admin/
+static/jazzmin/
+static/rest_framework/
+static/vendor/
+
 fishenv/
 .fishenv/
 # Distribution / packaging
