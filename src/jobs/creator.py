@@ -31,19 +31,26 @@ class JobCreator:
         plan: Optional[int] = None,
         **kwargs
     ) -> None:
-        if isinstance(author, User):
-            if author.role.id != 2:
-                raise UserRoleError("Only employer can create jobs.")
+        self._errors = list()
+        try:
+            if isinstance(author, User):
+                if author.role.id != 2:
+                    raise UserRoleError("Only employer can create jobs.")
+
+            if not author.is_active:
+                raise UserNotActive("User must be active to create job")
+        except Exception as e:
+            self.update_errors(e.__str__())
 
         self.data = {
-            'title': title,
-            'description': description,
-            'author': author.id,
-            'price': price,
-            'is_price_fixed': is_price_fixed,
-            'deadline': deadline,
-            'plan': plan,
-            **kwargs
+                'title': title,
+                'description': description,
+                'author': author.id,
+                'price': price,
+                'is_price_fixed': is_price_fixed,
+                'deadline': deadline,
+                'plan': plan,
+                **kwargs
         }
         if isinstance(deadline, str):
             self.data.update({
@@ -52,17 +59,17 @@ class JobCreator:
 
         self.author = author
 
-        if not author.is_active:
-            raise UserNotActive("User must be active to create job")
-
     def __call__(self) -> Job:
-        self.room = self.create_room()
-        self.job = self.create()
+        try:
+            self.room = self.create_room()
+            self.job = self.create()
 
-        if self.job is not None:
-            self.notify_creator()
+            if self.job is not None:
+                self.notify_creator()
 
-        return self.job
+            return self.job
+        except Exception as e: # noqa
+            self.update_errors(e.__str__())
 
     def create_room(self) -> Room:
         room = Room.objects.update_or_create(
@@ -82,6 +89,14 @@ class JobCreator:
             return serializer.instance
         else:
             raise ValidationError(serializer.errors)
+
+    def update_errors(self, error_message):
+        self._errors.append({'error': error_message})
+
+    @property
+    def errors(self) -> dict:
+        if len(self._errors):
+            return self._errors
 
     def notify_creator(self) -> Union[int, None]:
         _mail = send_email_after_create_job.delay(self.author.id, self.job.id)

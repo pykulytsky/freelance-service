@@ -1,3 +1,4 @@
+from typing import Optional
 import authentication.validators as custom_validators
 from app.mixins import ModelChangeDetectMixin
 from authentication.models import User
@@ -7,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.manager import Manager
 from djmoney.models.fields import MoneyField
+from .exceptions import JobAlreadyApproveProposal
 
 
 class BaseJobManager(Manager):
@@ -51,8 +53,24 @@ class Job(Timestamped, ModelChangeDetectMixin):
 
     views = models.PositiveIntegerField(default=0)
     published = models.BooleanField(default=False)
+    is_performer = models.BooleanField(default=False)
 
     objects = BaseJobManager()
+
+    @property
+    def approved_proposal(self) -> Optional['Proposal']:
+        proposal = self.proposals.filter(approved=True)
+        if proposal and len(proposal) < 2:
+            return proposal
+
+    def approve_proposal(self, proposal_id):
+        if not self.approved_proposal:
+            _proposal = self.proposals.get(id=proposal_id)
+            _proposal.approve()
+            self.is_performer = True
+            return _proposal
+        else:
+            raise JobAlreadyApproveProposal(f"Proposal {self.approved_proposal.id} already approved on this job.")
 
     class Meta:
         unique_together = ('author', 'performer')
@@ -126,3 +144,7 @@ class Proposal(Timestamped):
         default_currency='USD'
     )
     deadline = models.DateField(blank=True)
+
+    def approve(self):
+        self.approved = True
+        self.save()

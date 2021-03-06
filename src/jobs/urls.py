@@ -1,11 +1,16 @@
+from django import urls
 from django.urls import path
+from django.urls.conf import include
+from rest_framework.routers import DefaultRouter
+
 
 from jobs.api.views import *  # noqa
 
+router = DefaultRouter()
+router.register('job', JobViewSet, basename='job')
+
 urlpatterns = [
-    path('jobs/', JobListAPI.as_view(), name='job-list'),
-    path('jobs/<int:id>/', JobDetailAPI.as_view(), name='job-detail'),
-    path('jobs/user/<int:user_id>/', JobsByUserPerformListAPI.as_view(), name="job-by-user"),
+    path('', include(router.urls)),
     path('user/<int:user_id>/<int:job_id>/', JobsByUserPerformDetailAPI.as_view(), name="job-by-user"),
     path('favorites-jobs/<int:id>', FavoriteJobsAPI.as_view(), name='favorites-jobs-detail'),
     path('favorites-jobs/', FavoriteJobsListAPI.as_view(), name='favorites-jobs-list'),

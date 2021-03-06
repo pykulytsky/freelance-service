@@ -2,7 +2,7 @@ from jobs.creator import JobCreator, ProposalCreator
 from jobs.models import *
 from jobs.permissions import JobOwnerPermission
 from rest_framework import generics, status, viewsets
-from rest_framework.decorators import action  # noqa
+from rest_framework.decorators import action, permission_classes as permission  # noqa
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -129,4 +129,33 @@ class JobsByUserPerformDetailAPI(APIView):
 
 
 class JobViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for manage jobs
+    """
+    queryset = Job.objects.all()
+    serializer_class = JobListSerializer
     permission_classes = (IsAuthenticated, )
+
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            data = {k: data[k] for k in data if k != 'author'}
+
+            creator = JobCreator(author=request.user, **data)
+            creator()
+            if creator.errors:
+                return Response(creator.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['POST'])
+    @permission(JobOwnerPermission)
+    def approve(self, request, pk=None):
+        job = self.get_object()
+        proposal = job.approve_proposal(request.data['proposal_id'])
+        if proposal:
+            serializer = ProposalListSerializer(job.approved_proposal)
+            return Response(serializer.data, status=status.HTTP_200_OK)
