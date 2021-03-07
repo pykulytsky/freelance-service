@@ -43,7 +43,6 @@ def handle_erorrs(func: Callable):
 class JobCreator():
     """Service object for create job."""
 
-    @handle_erorrs
     def __init__(
         self,
         author: User,
@@ -56,40 +55,44 @@ class JobCreator():
         **kwargs
     ) -> None:
         self._errors = list()
-        if isinstance(author, User):
-            if author.role.id != 2:
-                raise UserRoleError("Only employer can create jobs.")
+        try:
+            if isinstance(author, User):
+                if author.role.id != 2:
+                    raise UserRoleError("Only employer can create jobs.")
 
-        if not author.is_active:
-            raise UserNotActive("User must be active to create job")
+            if not author.is_active:
+                raise UserNotActive("User must be active to create job")
+        except Exception as e:
+            self.update_errors(e.__str__())
+        else:
+            self.data = {
+                'title': title,
+                'description': description,
+                'author': author.id,
+                'price': price,
+                'is_price_fixed': is_price_fixed,
+                'deadline': deadline,
+                'plan': plan,
+                **kwargs
+            }
+            if isinstance(deadline, str):
+                self.data.update({
+                    'deadline': datetime.strptime(deadline, '%Y-%m-%d').date(),
+                })
 
-        self.data = {
-            'title': title,
-            'description': description,
-            'author': author.id,
-            'price': price,
-            'is_price_fixed': is_price_fixed,
-            'deadline': deadline,
-            'plan': plan,
-            **kwargs
-        }
-        if isinstance(deadline, str):
-            self.data.update({
-                'deadline': datetime.strptime(deadline, '%Y-%m-%d').date(),
-            })
+            self.author = author
 
-        self.author = author
-
-    @handle_erorrs
     def __call__(self) -> Job:
-        self.room = self.create_room()
-        self.job = self.create()
+        try:
+            self.room = self.create_room()
+            self.job = self.create()
 
-        if self.job is not None:
-            self.notify_creator()
+            if self.job is not None:
+                self.notify_creator()
 
-        return self.job
-
+            return self.job
+        except Exception as e:  # noqa
+            self.update_errors(e.__str__())
 
     def create_room(self) -> Room:
         room = Room.objects.update_or_create(
