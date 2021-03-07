@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Optional, Union
+from typing import Callable, Optional, Union
 
 from authentication.exceptions import UserNotActive, UserRoleError
 from authentication.models import User
@@ -31,9 +31,19 @@ class ErrorHandlerMixin(object):
             return self._errors
 
 
+def handle_erorrs(func: Callable):
+    def wrapper(self, *args, **kwargs):
+        try:
+            func(self, *args, **kwargs)
+        except Exception as e:
+            self.update_errors(str(e))
+    return wrapper
+
+
 class JobCreator():
     """Service object for create job."""
 
+    @handle_erorrs
     def __init__(
         self,
         author: User,
@@ -46,15 +56,12 @@ class JobCreator():
         **kwargs
     ) -> None:
         self._errors = list()
-        try:
-            if isinstance(author, User):
-                if author.role.id != 2:
-                    raise UserRoleError("Only employer can create jobs.")
+        if isinstance(author, User):
+            if author.role.id != 2:
+                raise UserRoleError("Only employer can create jobs.")
 
-            if not author.is_active:
-                raise UserNotActive("User must be active to create job")
-        except Exception as e:
-            self.update_errors(e.__str__())
+        if not author.is_active:
+            raise UserNotActive("User must be active to create job")
 
         self.data = {
             'title': title,
@@ -73,17 +80,16 @@ class JobCreator():
 
         self.author = author
 
+    @handle_erorrs
     def __call__(self) -> Job:
-        try:
-            self.room = self.create_room()
-            self.job = self.create()
+        self.room = self.create_room()
+        self.job = self.create()
 
-            if self.job is not None:
-                self.notify_creator()
+        if self.job is not None:
+            self.notify_creator()
 
-            return self.job
-        except Exception as e:  # noqa
-            self.update_errors(e.__str__())
+        return self.job
+
 
     def create_room(self) -> Room:
         room = Room.objects.update_or_create(

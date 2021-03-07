@@ -53,11 +53,13 @@ class UserManager(BaseAuthManager):
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(username, email, password, **extra_fields)
 
-    def create_superuser(self, username, email, password=None, **extra_fields):
+    def create_superuser(self, username: str, role_id: int, email: str, first_name: str, last_name: str, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
         extra_fields.setdefault('is_active', True)
+
+        role = Role.objects.get_or_create(id=role_id)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError(_('The superuser must have is_staff=True.'))
@@ -65,7 +67,7 @@ class UserManager(BaseAuthManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('The superuser must have is_superuser=True.'))
 
-        return self._create_user(username, email, password, **extra_fields)
+        return self._create_user(username, email, password, role=role, first_name=first_name, last_name=last_name, **extra_fields)
 
     def delete(self) -> Tuple[int, Dict[str, int]]:
         from .mailchimp.client import AppMailchimp

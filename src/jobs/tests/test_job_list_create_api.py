@@ -79,3 +79,19 @@ def test_create_job_api_emit_creator_send_email_task(api, mocker):
 
     assert response.status_code == 201
     send_email_after_create_job.delay.assert_called_once()
+
+
+def test_none_employer_create_job(active_api, mocker):
+    url = reverse('job-list')
+    mocker.patch('jobs.tasks.send_email_after_create_job.delay')
+
+    response = active_api.post(url, {
+        'title': 'test',
+        'description': 'test description',
+        'price': 100500,
+        'deadline': date.today(),
+        'is_price_fixed': True
+    })
+
+    assert response.status_code == 400
+    send_email_after_create_job.delay.assert_not_called()
