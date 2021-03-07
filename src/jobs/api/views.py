@@ -172,12 +172,26 @@ class JobViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['POST'])
+    @action(detail=True, methods=['POST'], url_path='approve')
     def approve(self, request, pk=None):
         job = self.get_object()
-        proposal = job.approve_proposal(request.data['proposal_id'])
-        if proposal:
-            serializer = ProposalListSerializer(job.approved_proposal)
+        try:
+            proposal = job.approve_proposal(request.data['proposal_id'])
+            if proposal:
+                serializer = ProposalListSerializer(job.approved_proposal, many=False)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        except JobAlreadyApproveProposal as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['POST'], url_path='done')
+    def done(self, request, pk=None):
+        job = self.get_object()
+        try:
+            job.confirm_done()
+        except JobAlreadyDoneErorr as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer = self.serializer_class(job)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def proposals_list(self):

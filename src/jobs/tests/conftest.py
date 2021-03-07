@@ -58,6 +58,16 @@ def active_user(django_user_model, performer_role, mixer, image):
 
 
 @pytest.fixture
+def user(django_user_model, performer_role, mixer, image):
+    return mixer.blend(
+        django_user_model,
+        role=performer_role,
+        is_active=True,
+        avatar=image
+    )
+
+
+@pytest.fixture
 def active_api(active_user):
     client = APIClient()
 

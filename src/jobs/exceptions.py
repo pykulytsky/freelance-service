@@ -7,3 +7,7 @@ class JobBaseException(Exception):
 
 class JobAlreadyApproveProposal(JobBaseException):
     pass
+
+
+class JobAlreadyDoneErorr(Exception):
+    pass

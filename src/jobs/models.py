@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.manager import Manager
 from djmoney.models.fields import MoneyField
-from .exceptions import JobAlreadyApproveProposal
+from .exceptions import JobAlreadyApproveProposal, JobAlreadyDoneErorr
 
 
 class BaseJobManager(Manager):
@@ -53,7 +53,8 @@ class Job(Timestamped, ModelChangeDetectMixin):
 
     views = models.PositiveIntegerField(default=0)
     published = models.BooleanField(default=False)
-    is_performer = models.BooleanField(default=False)
+    has_performer = models.BooleanField(default=False)
+    done = models.BooleanField(default=False)
 
     objects = BaseJobManager()
 
@@ -61,16 +62,26 @@ class Job(Timestamped, ModelChangeDetectMixin):
     def approved_proposal(self) -> Optional['Proposal']:
         proposal = self.proposals.filter(approved=True)
         if proposal and len(proposal) < 2:
-            return proposal
+            return proposal.first()
 
     def approve_proposal(self, proposal_id):
         if not self.approved_proposal:
             _proposal = self.proposals.get(id=proposal_id)
             _proposal.approve()
-            self.is_performer = True
+            self.has_performer = True
+            self.save()
             return _proposal
         else:
             raise JobAlreadyApproveProposal(f"Proposal {self.approved_proposal.id} already approved on this job.")
+
+    def confirm_done(self):
+        if not self.done and self.approved_proposal:
+            self.done = True
+            self.published = False
+
+            self.save()
+        else:
+            raise JobAlreadyDoneErorr("This job is already done")
 
     class Meta:
         unique_together = ('author', 'performer')
