@@ -1,0 +1,70 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-03-08 20:26+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: authentication/models.py:35
+msgid "The user does not have a name."
+msgstr "В користувача не вказане ім'я"
+
+#: authentication/models.py:37
+msgid "No email specified."
+msgstr "Не передано пошту"
+
+#: authentication/models.py:63
+msgid "The superuser must have is_staff=True."
+msgstr "Адмін повинен мати поле is_staff=True"
+
+#: authentication/models.py:66
+msgid "The superuser must have is_superuser=True."
+msgstr "Адмін повинен мати поле is_superuser=True"
+
+#: authentication/models.py:113
+msgid "Age"
+msgstr ""
+
+#: authentication/models.py:117
+msgid "First Name"
+msgstr ""
+
+#: authentication/models.py:121
+msgid "Last Name"
+msgstr ""
+
+#: authentication/models.py:129
+msgid "Rating"
+msgstr ""
+
+#: authentication/models.py:158
+msgid "Field updates when user login first time"
+msgstr ""
+
+#: authentication/models.py:159
+msgid "Field updates when user login"
+msgstr ""
+
+#: authentication/models.py:161
+msgid "Card Number"
+msgstr ""
+
+#: authentication/models.py:162
+msgid "Expiration Date"
+msgstr ""
+
+#: authentication/models.py:163
+msgid "CVV/CVC"
+msgstr ""

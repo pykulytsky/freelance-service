@@ -42,3 +42,16 @@ class ModelChangeDetectMixin(object):
     def _dict(self):
         return model_to_dict(self, fields=[field.name for field in
                                            self._meta.fields])
+
+
+class ErrorHandlerMixin(object):
+    def __init__(self) -> None:
+        self.errors = list()
+
+    def update_errors(self, error_message):
+        self._errors.append({'error': error_message})
+
+    @property
+    def errors(self) -> dict:
+        if len(self._errors):
+            return self._errors

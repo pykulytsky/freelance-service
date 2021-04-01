@@ -65,26 +65,6 @@ PROJECT_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': str(BASE_DIR) + '/logs/debug.log',
-        },
-    },
-    'loggers': {
-        'request': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
-
-
 SENTRY_DSN = config('SENTRY_DSN', default='')
 if not DEBUG and len(SENTRY_DSN):
     sentry_sdk.init(

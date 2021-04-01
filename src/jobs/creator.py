@@ -10,25 +10,13 @@ from rest_framework.exceptions import ValidationError
 
 from .models import Job, Proposal
 from .tasks import send_email_after_create_job
+from app.mixins import ErrorHandlerMixin
 
 
 class JobCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Job
         exclude = ('performer', )
-
-
-class ErrorHandlerMixin(object):
-    def __init__(self) -> None:
-        self.errors = list()
-
-    def update_errors(self, error_message):
-        self._errors.append({'error': error_message})
-
-    @property
-    def errors(self) -> dict:
-        if len(self._errors):
-            return self._errors
 
 
 class JobCreator():

@@ -110,15 +110,15 @@ class User(AbstractBaseUser, PermissionsMixin, ModelChangeDetectMixin):
     )
     age = models.IntegerField(
         validators=[custom_validators.validate_age, ],
-        verbose_name='Age',
+        verbose_name=_('Age'),
         blank=True, null=True
     )
 
-    first_name = models.CharField(max_length=255, blank=True, verbose_name="First Name")
+    first_name = models.CharField(max_length=255, blank=True, verbose_name=_("First Name"))
     last_name = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name="Last Name"
+        verbose_name=_("Last Name")
     )
 
     avatar = models.ImageField(upload_to="assets/avatars/", blank=True)
@@ -126,7 +126,7 @@ class User(AbstractBaseUser, PermissionsMixin, ModelChangeDetectMixin):
 
     total_jobs_completed = models.PositiveIntegerField(default=0)
     rating = models.PositiveSmallIntegerField(
-        validators=[custom_validators.rating_validator, ], verbose_name="Rating",
+        validators=[custom_validators.rating_validator, ], verbose_name=_("Rating"),
         default=0
     )
 
@@ -155,12 +155,12 @@ class User(AbstractBaseUser, PermissionsMixin, ModelChangeDetectMixin):
 
     country = CountryField(blank=True)
 
-    first_login = models.DateTimeField(verbose_name="Field updates when user login first time", blank=True, null=True)
-    last_login = models.DateTimeField(verbose_name="Field updates when user login", blank=True, null=True)
+    first_login = models.DateTimeField(verbose_name=_("Field updates when user login first time"), blank=True, null=True)
+    last_login = models.DateTimeField(verbose_name=_("Field updates when user login"), blank=True, null=True)
 
-    card_number = CardNumberField('Card Number', blank=True, null=True)
-    card_expiry = CardExpiryField('Expiration Date', blank=True, null=True)
-    card_code = SecurityCodeField('CVV/CVC', blank=True, null=True)
+    card_number = CardNumberField(_('Card Number'), blank=True, null=True)
+    card_expiry = CardExpiryField(_('Expiration Date'), blank=True, null=True)
+    card_code = SecurityCodeField(_('CVV/CVC'), blank=True, null=True)
 
     objects = UserManager()
 
