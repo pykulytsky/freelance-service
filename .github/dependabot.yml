@@ -1,0 +1,51 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: prompt-toolkit
+    versions:
+    - 3.0.15
+    - 3.0.16
+    - 3.0.17
+  - dependency-name: lazy-object-proxy
+    versions:
+    - 1.5.2
+  - dependency-name: django
+    versions:
+    - 3.1.7
+  - dependency-name: py-moneyed
+    versions:
+    - "1.2"
+  - dependency-name: ipython
+    versions:
+    - 7.21.0
+  - dependency-name: autopep8
+    versions:
+    - 1.5.5
+  - dependency-name: drf-flex-fields
+    versions:
+    - 0.8.9
+  - dependency-name: autobahn
+    versions:
+    - 21.1.1
+    - 21.2.1
+  - dependency-name: cryptography
+    versions:
+    - 3.3.2
+    - 3.4.1
+    - 3.4.3
+  - dependency-name: faker
+    versions:
+    - 6.0.0
+    - 6.1.1
+    - 6.3.0
+    - 6.4.1
+  - dependency-name: sentry-sdk
+    versions:
+    - 0.20.0
+    - 0.20.1
+    - 0.20.2
