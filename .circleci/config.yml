@@ -1,0 +1,28 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@0.2.1
+
+jobs:
+  build-and-test:
+    executor: python/default
+    steps:
+      - checkout
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache
+      - run:
+          command: |
+            cd app
+            pytest -v
+          name: Test
+      - run:
+          command: |
+            cd app
+            flake8
+          name: Lint
+
+workflows:
+  main:
+    jobs:
+      - build-and-test
